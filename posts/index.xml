@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on 知行
+合一</title>
+    <link>https://blog.abnerzhao.com/posts/</link>
+    <description>Recent content in Posts on 知行
+合一</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 29 Sep 2020 15:56:11 +0800</lastBuildDate>
+    
+	<atom:link href="https://blog.abnerzhao.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>InfluxDB 高可用</title>
+      <link>https://blog.abnerzhao.com/posts/influxdb-ha/</link>
+      <pubDate>Tue, 29 Sep 2020 15:56:11 +0800</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/influxdb-ha/</guid>
+      <description>&lt;p&gt;&lt;code&gt;influxdb&lt;/code&gt; 开源版本不支持集群模式，社区开源的方案有多种，本文主要介绍官方提供的高可用方案 &lt;code&gt;influxdb-relay&lt;/code&gt;。&lt;/p&gt;
+&lt;h3 id=&#34;架构图&#34;&gt;架构图&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;        ┌─────────────────┐                 
+        │writes &amp;amp; queries │                 
+        └─────────────────┘                 
+                 │                          
+                 ▼                          
+         ┌───────────────┐                  
+         │               │                  
+┌────────│ Load Balancer │─────────┐        
+│        │               │         │        
+│        └──────┬─┬──────┘         │        
+│               │ │                │        
+│               │ │                │        
+│        ┌──────┘ └────────┐       │        
+│        │ ┌─────────────┐ │       │┌──────┐
+│        │ │/write or UDP│ │       ││/query│
+│        ▼ └─────────────┘ ▼       │└──────┘
+│  ┌──────────┐      ┌──────────┐  │        
+│  │ InfluxDB │      │ InfluxDB │  │        
+│  │ Relay    │      │ Relay    │  │        
+│  └──┬────┬──┘      └────┬──┬──┘  │        
+│     │    |              |  │     │        
+│     |  ┌─┼──────────────┘  |     │        
+│     │  │ └──────────────┐  │     │        
+│     ▼  ▼                ▼  ▼     │        
+│  ┌──────────┐      ┌──────────┐  │        
+│  │          │      │          │  │        
+└─▶│ InfluxDB │      │ InfluxDB │◀─┘        
+   │          │      │          │           
+   └──────────┘      └──────────┘         
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>MySQL 中 utf8 和 utf8mb4 编码</title>
+      <link>https://blog.abnerzhao.com/posts/mysql-utf8/</link>
+      <pubDate>Tue, 25 Feb 2020 23:11:27 +0000</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/mysql-utf8/</guid>
+      <description>&lt;p&gt;最近在开发过程中碰到数据库写入失败的情况。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;Incorrect string value: &amp;lsquo;\xF0\x9F\x91\x91M\xE3&amp;hellip;&amp;rdquo; for column &amp;lsquo;nick_name&amp;rsquo; at row 1&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;排查发现是由于该用户的昵称含有 &lt;code&gt;emoji&lt;/code&gt; 表情包导致的，含有表情包和普通字符串有什么区别呢？&lt;/p&gt;
+&lt;p&gt;原来 MySQL 的默认 &lt;code&gt;utf8&lt;/code&gt; (也称 &lt;code&gt;utf8mb3&lt;/code&gt;) 只支持三个字节的字符。而 &lt;code&gt;emoji&lt;/code&gt; 表情包需要四个字节表示。所以存储就会报错。不过 MySQL 在 5.5.3 之后增加了这个 &lt;code&gt;utf8mb4&lt;/code&gt; 的编码，用来兼容四字节的 Unicode。&lt;/p&gt;
+&lt;p&gt;为了解决这个问题，需要修改数据库的字符编码。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>2019 小结</title>
+      <link>https://blog.abnerzhao.com/posts/my2019/</link>
+      <pubDate>Sun, 05 Jan 2020 16:25:55 +0000</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/my2019/</guid>
+      <description>&lt;h3 id=&#34;加班和宅&#34;&gt;加班和宅&lt;/h3&gt;
+&lt;p&gt;2019 年总结起来就两个关键字：&lt;code&gt;加班&lt;/code&gt;和&lt;code&gt;宅&lt;/code&gt;，在肥宅的道路上越走越远。&lt;/p&gt;
+&lt;p&gt;由于加班较多，锻炼的时间相对减少，运动量直线下降。2019 年总共跑步 147 公里，相较于 2018 年 400 公里的运动量直接被腰斩。伴随着运动量地降低，体重也随着飙升。长胖了 10 斤，算是 2019 年的小小收获吧(囧)。不过唯一值得庆幸的是羽毛球一直坚持了下来，有一群自律的球友还是很幸福的。还是要通过外部条件去督促和约束自己，人一旦散漫下来过日便会失去些许活力。生命在于运动，希望新的一年运动量不要再创新低。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
