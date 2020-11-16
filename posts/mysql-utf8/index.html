@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abnerzhao" />
+	
+	
+	
+	<title>MySQL 中 utf8 和 utf8mb4 编码 ｜ 知行
+合一</title>
+	
+    
+    
+    <meta name="description" content="最近在开发过程中碰到数据库写入失败的情况。
+ &amp;ldquo;Incorrect string value: &amp;lsquo;\xF0\x9F\x91\x91M\xE3&amp;hellip;&amp;rdquo; for column &amp;lsquo;nick_name&amp;rsquo; at row 1&amp;rdquo;
+ 排查发现是由于该用户的昵称含有 emoji 表情包导致的，含有表情包和普通字符串有什么区别呢？
+原来 MySQL 的默认 utf8 (也称 utf8mb3) 只支持三个字节的字符。而 emoji 表情包需要四个字节表示。所以存储就会报错。不过 MySQL 在 5.5.3 之后增加了这个 utf8mb4 的编码，用来兼容四字节的 Unicode。
+为了解决这个问题，需要修改数据库的字符编码。
+" />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, theme, zozo" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://blog.abnerzhao.com/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">Archive</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://blog.abnerzhao.com/">
+                    <span>知行
+合一</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://www.douban.com/people/66794775/" title="douban" target="_blank"><i class="ri-douban-fill"></i></a>
+                
+                
+                
+                <a href="https://github.com/abnerzhao" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                <a href="https://blog.abnerzhao.com/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/mysql-utf8/'>MySQL 中 utf8 和 utf8mb4 编码</a></h2>
+                        <span class="date">2020.02.25</span>
+                    </div>
+                    <div class="post_content markdown"><p>最近在开发过程中碰到数据库写入失败的情况。</p>
+<blockquote>
+<p>&ldquo;Incorrect string value: &lsquo;\xF0\x9F\x91\x91M\xE3&hellip;&rdquo; for column &lsquo;nick_name&rsquo; at row 1&rdquo;</p>
+</blockquote>
+<p>排查发现是由于该用户的昵称含有 <code>emoji</code> 表情包导致的，含有表情包和普通字符串有什么区别呢？</p>
+<p>原来 MySQL 的默认 <code>utf8</code> (也称 <code>utf8mb3</code>) 只支持三个字节的字符。而 <code>emoji</code> 表情包需要四个字节表示。所以存储就会报错。不过 MySQL 在 5.5.3 之后增加了这个 <code>utf8mb4</code> 的编码，用来兼容四字节的 Unicode。</p>
+<p>为了解决这个问题，需要修改数据库的字符编码。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt; show variables like &#39;%char%&#39;;
++---------------------------+----------------------------+
+| Variable_name             | Value                      |
++---------------------------+----------------------------+
+| character_set_client      | utf8                       |
+| character_set_connection  | utf8                       |
+| character_set_database    | utf8mb4                    |
+| character_set_filesystem  | binary                     |
+| character_set_results     | utf8                       |
+| character_set_server      | utf8mb4                    |
+| character_set_system      | utf8                       |
+| character_sets_dir        | /opt/mysql/share/charsets/ |
+| ft_query_extra_word_chars | OFF                        |
++---------------------------+----------------------------+
+
+&gt; show create database xxx;
++-------------------------+----------------------------------------------------------------------------------------------------------------+
+| Database                | Create Database                                                                                                |
++-------------------------+----------------------------------------------------------------------------------------------------------------+
+| xxx | CREATE DATABASE `xxx` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ |
++-------------------------+----------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+&gt; show create table user;
+| user  | CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT &#39;用户ID&#39;,
+  `nick_name` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT &#39;昵称&#39;,
+  `avatar` varchar(300) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT &#39;头像数据&#39;,
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &#39;记录更新时间&#39;,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=157 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+</code></pre></div><p>通过查看数据库、表的字符编码发现已经是 <code>utf8mb4</code>，那么问题可能出在客户端。查看 Flask 项目的配置文件，发现客户端配置的编码为 <code>utf8</code>。将编码格式修改为 <code>utf8mb4</code> 即可解决问题。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">class devConfig(baseConfig):
+    SQLALCHEMY_DATABASE_URI = &#39;mysql+pymysql://root:xxxx@localhost/ncov?charset=utf8mb4&#39;
+</code></pre></div><blockquote>
+<p>UTF-8 is a variable-length encoding. In the case of UTF-8, this means that storing one code point requires one to four bytes. However, MySQL&rsquo;s encoding called &ldquo;utf8&rdquo; (alias of &ldquo;utf8mb3&rdquo;) only stores a maximum of three bytes per code point.</p>
+<p>So the character set &ldquo;utf8&rdquo;/&ldquo;utf8mb3&rdquo; cannot store all Unicode code points: it only supports the range 0x000 to 0xFFFF, which is called the &ldquo;Basic Multilingual Plane&rdquo;. See also Comparison of Unicode encodings.</p>
+</blockquote>
+<p>参考：<a href="https://stackoverflow.com/questions/30074492/what-is-the-difference-between-utf8mb4-and-utf8-charsets-in-mysql">What is the difference between utf8mb4 and utf8 charsets in MySQL?
+</a></p>
+<p>三个字节的 uft8 支持编码的 Unicode 字符范围是 0x000-0xffff，称之为 Unicode 的基本多文种平面(BMP)，不在基本多文种平面的 Unicode 字符都无法使用 MySQL 中的 utf8 字符集存储。</p>
+<p>通过以下命令可直接将数据库字符集变更为 <code>utf8mb4</code> 编码。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"># 修改数据库:
+ALTER DATABASE database_name CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+# 修改表:
+ALTER TABLE table_name CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+# 修改表字段:
+ALTER TABLE table_name CHANGE column_name column_name VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+</code></pre></div></div>
+                    <div class="post_footer">
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://blog.abnerzhao.com">Designed by Abnerzhao,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+
+    <script src="https://blog.abnerzhao.com/js/jquery-3.5.1.min.js"></script>
+<link href="https://blog.abnerzhao.com/css/fancybox.min.css" rel="stylesheet">
+<script src="https://blog.abnerzhao.com/js/fancybox.min.js"></script>
+<script src="https://blog.abnerzhao.com/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+</body>
+
+</html>
