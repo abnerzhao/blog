@@ -8,12 +8,16 @@
 	
 	
 	
-	<title>Posts ｜ 知行
+	<title>Grafana 企业微信告警配置 ｜ 知行
 合一</title>
 	
     
     
-    <meta name="description" content="Hugo theme zozo example site." />
+    <meta name="description" content="Grafana 支持的告警方式非常多，对于即时通讯类软件不支持微信和企业微信。
+如何让 Grafana 支持企业微信告警，网上有不少开源的解决方案。
+ 基于 Grafana 支持企业微信的分支源码重新编译   参考：Add a new notifier : WeChat Work
+  使用 Grafana Alerting webhook 功能   参考：g2ww、wechat-work-message-push-go
+" />
     
 
     
@@ -22,9 +26,6 @@
     
 
 	
-	<link rel="alternate" type="application/rss+xml" href="https://blog.abnerzhao.com/posts/index.xml" title="知行
-合一" />
-    
     
     <link rel="shortcut icon" href="https://blog.abnerzhao.com/images/favicon.ico" />
 
@@ -91,51 +92,71 @@
     </div>
 </div>
         <div class="content">
-            <div class="list_with_title">
-                
-                <div class="listing_title">2021</div>
-                <div class="listing">
-                    
-                    <div class="listing_item">
-                        <div class="listing_post">
-                            <a href="/posts/grafana-wechat-alert/">Grafana 企业微信告警配置</a>
-                            <div class="post_time"><span class="date">01-14</span></div>
-                        </div>
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/grafana-wechat-alert/'>Grafana 企业微信告警配置</a></h2>
+                        <span class="date">2021.01.14</span>
                     </div>
-                    
+                    <div class="post_content markdown"><p>Grafana 支持的<a href="https://grafana.com/docs/grafana/latest/alerting/notifications/#list-of-supported-notifiers">告警方式</a>非常多，对于即时通讯类软件不支持微信和企业微信。</p>
+<p>如何让 Grafana 支持企业微信告警，网上有不少开源的解决方案。</p>
+<ul>
+<li>基于 Grafana 支持企业微信的分支源码重新编译</li>
+</ul>
+<blockquote>
+<p>参考：<a href="https://github.com/grafana/grafana/pull/26109">Add a new notifier : WeChat Work</a></p>
+</blockquote>
+<ul>
+<li>使用 Grafana Alerting webhook 功能</li>
+</ul>
+<blockquote>
+<p>参考：<a href="https://github.com/n0vad3v/g2ww">g2ww</a>、<a href="https://github.com/cloverzrg/wechat-work-message-push-go"> wechat-work-message-push-go</a></p>
+</blockquote>
+<h3 id="webhook">webhook</h3>
+<p>重新编译太麻烦，也不便于后期升级。开源的解决方案原理都差不多，就是做了一层代理转发。将 Grafana Post的内容转发到企业微信接口。代码结构、部署及配置过程比较简单。</p>
+<ol>
+<li>申请企业微信群机器人并获取到Key</li>
+<li>代码部署</li>
+<li>Grafana Alerting webhook 配置</li>
+</ol>
+<p>基于 g2ww 项目进行了改进和完善，获取最新代码 <a href="https://github.com/abnerzhao/g2ww">g2ww</a> 进行部署。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ git pull https://github.com/abnerzhao/g2ww.git
+$ sudo make docker
+$ sudo docker images
+REPOSITORY                  TAG                 IMAGE ID            CREATED             SIZE
+abnerzhao/g2ww              0.1                 ebd29f4cb023        34 minutes ago      18.6MB
+$ sudo docker run -d --name webhook -p 2408:2408 abnerzhao/g2ww:0.1
+</code></pre></div><p>Alerting 配置</p>
+<p><img src="https://hk-abner.oss-cn-hongkong.aliyuncs.com/markdown/image-20210114121206966.png" alt="image-20210114121206966"></p>
+<p><code>URL</code> 配置可以是 http://ip:port/key 或者使用 nginx 代理 http://domain/key</p>
+<p>点击 <code>Test</code> 即可收到如下消息：</p>
+<p><img src="https://hk-abner.oss-cn-hongkong.aliyuncs.com/markdown/%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_9fc96f81-9331-42f5-8d47-2e129d8fbd16.png" alt="企业微信截图_9fc96f81-9331-42f5-8d47-2e129d8fbd16"></p>
+<p>支持图文和 Markdown 格式，消息内容可自定义。</p>
+<p><img src="https://hk-abner.oss-cn-hongkong.aliyuncs.com/markdown/%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_838db84d-5184-400c-a2ba-4a214958cc7f.png" alt="企业微信截图_838db84d-5184-400c-a2ba-4a214958cc7f"></p>
+<h3 id="问题">问题</h3>
+<ul>
+<li>
+<p>通过 Docker 启动的 Grafana 消息链接如果无法打开，则需要设置环境变量 <code>GF_SERVER_ROOT_URL=http://ip:3000</code>或者修改配置文件 <code>root_url</code>参数。</p>
+</li>
+<li>
+<p>发送图文消息，图片是无法显示的，需要配置第三方存储如 S3 等。</p>
+</li>
+</ul>
+<blockquote>
+<p>参考：<a href="https://grafana.com/docs/grafana/latest/alerting/notifications/#external-image-store">external-image-store</a></p>
+</blockquote></div>
+                    <div class="post_footer">
+                        
+                    </div>
                 </div>
                 
-                <div class="listing_title">2020</div>
-                <div class="listing">
-                    
-                    <div class="listing_item">
-                        <div class="listing_post">
-                            <a href="/posts/influxdb-ha/">InfluxDB 高可用</a>
-                            <div class="post_time"><span class="date">09-29</span></div>
-                        </div>
-                    </div>
-                    
-                    <div class="listing_item">
-                        <div class="listing_post">
-                            <a href="/posts/mysql-utf8/">MySQL 中 utf8 和 utf8mb4 编码</a>
-                            <div class="post_time"><span class="date">02-25</span></div>
-                        </div>
-                    </div>
-                    
-                    <div class="listing_item">
-                        <div class="listing_post">
-                            <a href="/posts/my2019/">2019 小结</a>
-                            <div class="post_time"><span class="date">01-05</span></div>
-                        </div>
-                    </div>
-                    
-                </div>
+                
+                <div class="doc_comments"></div>
                 
             </div>
-            <div class="pagination"></div>
         </div>
-        <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
     </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
     <footer class="footer">
     <div class="powered_by">
         <a href="https://blog.abnerzhao.com">Designed by Abnerzhao,</a>

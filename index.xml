@@ -8,10 +8,32 @@
 合一</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 29 Sep 2020 15:56:11 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 14 Jan 2021 12:57:32 +0800</lastBuildDate>
     
 	<atom:link href="https://blog.abnerzhao.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Grafana 企业微信告警配置</title>
+      <link>https://blog.abnerzhao.com/posts/grafana-wechat-alert/</link>
+      <pubDate>Thu, 14 Jan 2021 12:57:32 +0800</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/grafana-wechat-alert/</guid>
+      <description>&lt;p&gt;Grafana 支持的&lt;a href=&#34;https://grafana.com/docs/grafana/latest/alerting/notifications/#list-of-supported-notifiers&#34;&gt;告警方式&lt;/a&gt;非常多，对于即时通讯类软件不支持微信和企业微信。&lt;/p&gt;
+&lt;p&gt;如何让 Grafana 支持企业微信告警，网上有不少开源的解决方案。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;基于 Grafana 支持企业微信的分支源码重新编译&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;参考：&lt;a href=&#34;https://github.com/grafana/grafana/pull/26109&#34;&gt;Add a new notifier : WeChat Work&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;使用 Grafana Alerting webhook 功能&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;参考：&lt;a href=&#34;https://github.com/n0vad3v/g2ww&#34;&gt;g2ww&lt;/a&gt;、&lt;a href=&#34;https://github.com/cloverzrg/wechat-work-message-push-go&#34;&gt; wechat-work-message-push-go&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
     
     <item>
       <title>InfluxDB 高可用</title>

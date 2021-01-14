@@ -3,17 +3,22 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://blog.abnerzhao.com/posts/influxdb-ha/</loc>
-    <lastmod>2020-09-29T15:56:11+08:00</lastmod>
+    <loc>https://blog.abnerzhao.com/posts/grafana-wechat-alert/</loc>
+    <lastmod>2021-01-14T12:57:32+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://blog.abnerzhao.com/posts/</loc>
-    <lastmod>2020-09-29T15:56:11+08:00</lastmod>
+    <lastmod>2021-01-14T12:57:32+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://blog.abnerzhao.com/</loc>
+    <lastmod>2021-01-14T12:57:32+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.abnerzhao.com/posts/influxdb-ha/</loc>
     <lastmod>2020-09-29T15:56:11+08:00</lastmod>
   </url>
   
