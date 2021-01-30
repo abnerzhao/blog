@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abnerzhao" />
+	
+	
+	
+	<title>go build 编译优化 ｜ 知行
+合一</title>
+	
+    
+    
+    <meta name="description" content="Go 项目使用容器运行时报以下错误：
+standard_init_linux.go:207: exec user process caused &amp;#34;no such file or directory&amp;#34; 网上查了一下原因：CGO has to be disabled for alpine.
+Dockerfile 中使用的是 golang:1.14-alpine 镜像，Go build 编译参数如下：
+GOOS=linux GOARCH=amd64 go build -ldflags &amp;#34;-w -s&amp;#34; -gcflags &amp;#34;-N -l&amp;#34; -mod=vendor -o ./bin/mytest . 显而易见添加 CGO_ENABLED=0 编译之后即可运行成功。CGO_ENABLED 默认是开启的，允许在 Go 代码中调用 C 代码。
+go build 编译生产环境下使用的可执行文件一般会加一些优化参数，简单复习一下。
+" />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, theme, zozo" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://blog.abnerzhao.com/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">Archive</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://blog.abnerzhao.com/">
+                    <span>知行
+合一</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://www.douban.com/people/66794775/" title="douban" target="_blank"><i class="ri-douban-fill"></i></a>
+                
+                
+                
+                <a href="https://github.com/abnerzhao" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                <a href="https://blog.abnerzhao.com/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/go-build/'>go build 编译优化</a></h2>
+                        <span class="date">2021.01.30</span>
+                    </div>
+                    <div class="post_content markdown"><p>Go 项目使用容器运行时报以下错误：</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">standard_init_linux.go:207: exec user process caused &#34;no such file or directory&#34;
+</code></pre></div><p>网上查了一下原因：<code>CGO has to be disabled for alpine.</code></p>
+<p>Dockerfile 中使用的是 <code>golang:1.14-alpine</code> 镜像，Go build 编译参数如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">GOOS=linux GOARCH=amd64 go build -ldflags &#34;-w -s&#34; -gcflags &#34;-N -l&#34; -mod=vendor -o ./bin/mytest .
+</code></pre></div><p>显而易见添加 <code>CGO_ENABLED=0</code> 编译之后即可运行成功。<code>CGO_ENABLED</code> 默认是开启的，允许在 Go 代码中调用 C 代码。</p>
+<p><code>go build</code> 编译生产环境下使用的可执行文件一般会加一些优化参数，简单复习一下。</p>
+<h3 id="go-build">go build</h3>
+<p>Go语言的源码文件包含：</p>
+<ul>
+<li>命令源码文件：可执行程序的入口</li>
+<li>库源码文件：集中放置待被使用的程序实体（全局常量、全局变量、接口、结构体、函数等）</li>
+<li>测试源码文件：对前面两种源码文件中的程序实体的功能和性能进行测试</li>
+</ul>
+<p><code>go build</code> 命令用于编译我们指定的源码文件或代码包以及它们的依赖包。<code>go build</code> 对于库源码文件的代码包只会做检查性编译不会输出任何结果文件。有 <code>main</code> 函数的命令源码文件则编译输出二进制文件。</p>
+<h4 id="常用标记">常用标记</h4>
+<p>以下常用标记对于 <code>go install</code>、<code>go run</code>、<code>go test</code> 同样有效</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">-a
+    force rebuilding of packages that are already up-to-date.
+    // 强行对所有涉及到的代码包进行重新构建，即使它们已经是最新
+-n
+    print the commands but do not run them.
+  // 打印期间所用的命令但并不真正执行
+-p n
+    the number of builds that can be run in parallel.
+    The default is the number of CPUs available.
+  This edits config and provides no error if you surpass your core count
+  // 执行任务的并行数量，默认 CPU 逻辑核数，即使超配也不会报错
+
+-race
+    enable data race detection.
+    Supported only on linux/amd64, darwin/amd64 and windows/amd64.
+  ...
+  // 开启竞态条件检测
+-v
+    print the names of packages as they are compiled.
+    ...
+    // 打印被编译的代码包名字
+
+-work
+    print the name of the temporary work directory and
+    do not delete it when exiting.
+    ...
+    // 打印编译时生成的临时工作目录路径，并在编译结束时保留它。默认情况编译结束会删除。
+
+-x
+    print the commands
+  // 打印编译期间所用的的其他命令
+</code></pre></div><h4 id="编译选项">编译选项</h4>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="o">-</span> <span class="nx">asmflags</span>  
+  <span class="nx">arguments</span> <span class="nx">to</span> <span class="nx">pass</span> <span class="nx">on</span> <span class="nx">each</span> <span class="k">go</span> <span class="nx">tool</span> <span class="nx">asm</span> <span class="nx">invocation</span><span class="p">.</span>
+  <span class="c1">// 控制 Go 语言编译器编译汇编语言文件时的行为
+</span><span class="c1"></span>  
+<span class="o">-</span> <span class="nx">buildmode</span> 
+  <span class="nx">build</span> <span class="nx">mode</span> <span class="nx">to</span> <span class="nx">use</span>
+  <span class="c1">// 指定编译模式，支持六种编译模式
+</span><span class="c1"></span>  
+<span class="o">-</span> <span class="nx">compiler</span>  
+  <span class="nx">ame</span> <span class="nx">of</span> <span class="nx">compiler</span> <span class="nx">to</span> <span class="nx">use</span><span class="p">,</span> <span class="nx">as</span> <span class="nx">in</span> <span class="nx">runtime</span><span class="p">.</span><span class="nf">Compiler</span> <span class="p">(</span><span class="nx">gccgo</span> <span class="nx">or</span> <span class="nx">gc</span><span class="p">).</span>
+  <span class="c1">// 指定编译器，其值可为 gc 或 gccgo，gc 编译器即为 Go 语言自带编译器，gccgo 为 GCC 提供的编译器
+</span><span class="c1"></span>  
+<span class="o">-</span> <span class="nx">gccgoflags</span> <span class="err">&#39;</span><span class="nx">arg</span> <span class="nx">list</span><span class="err">&#39;</span>
+  <span class="nx">arguments</span> <span class="nx">to</span> <span class="nx">pass</span> <span class="nx">on</span> <span class="nx">each</span> <span class="nx">gccgo</span> <span class="nx">compiler</span><span class="o">/</span><span class="nx">linker</span> <span class="nx">invocation</span><span class="p">.</span>
+  <span class="c1">// 指定需要传递给 gccgo 编译器或链接器的标记的列表
+</span><span class="c1"></span>  
+<span class="o">-</span> <span class="nx">gcflags</span> <span class="err">&#39;</span><span class="nx">arg</span> <span class="nx">list</span><span class="err">&#39;</span>
+  <span class="nx">arguments</span> <span class="nx">to</span> <span class="nx">pass</span> <span class="nx">on</span> <span class="nx">each</span> <span class="k">go</span> <span class="nx">tool</span> <span class="nx">compile</span> <span class="nx">invocation</span><span class="p">.</span>
+  <span class="c1">// 指定需要传递给 go tool compile 命令的标记的列表
+</span><span class="c1"></span>  
+<span class="o">-</span> <span class="nx">installsuffix</span> <span class="nx">suffix</span>
+  <span class="nx">a</span> <span class="nx">suffix</span> <span class="nx">to</span> <span class="nx">use</span> <span class="nx">in</span> <span class="nx">the</span> <span class="nx">name</span> <span class="nx">of</span> <span class="nx">the</span> <span class="kn">package</span> <span class="nx">installation</span> <span class="nx">directory</span><span class="p">,</span>
+    <span class="nx">in</span> <span class="nx">order</span> <span class="nx">to</span> <span class="nx">keep</span> <span class="nx">output</span> <span class="nx">separate</span> <span class="nx">from</span> <span class="k">default</span> <span class="nx">builds</span><span class="p">.</span>
+    <span class="nx">If</span> <span class="nx">using</span> <span class="nx">the</span> <span class="o">-</span><span class="nx">race</span> <span class="nx">flag</span><span class="p">,</span> <span class="nx">the</span> <span class="nx">install</span> <span class="nx">suffix</span> <span class="nx">is</span> <span class="nx">automatically</span> <span class="nx">set</span> <span class="nx">to</span> <span class="nx">race</span>
+    <span class="nx">or</span><span class="p">,</span> <span class="k">if</span> <span class="nx">set</span> <span class="nx">explicitly</span><span class="p">,</span> <span class="nx">has</span> <span class="nx">_race</span> <span class="nx">appended</span> <span class="nx">to</span> <span class="nx">it</span><span class="p">.</span>
+    <span class="c1">// 使当前的输出目录与默认的编译输出目录分离，此标记的值会作为结果文件的父目录名称的后缀
+</span><span class="c1"></span>    
+<span class="o">-</span> <span class="nx">ldflags</span> <span class="err">&#39;</span><span class="nx">flag</span> <span class="nx">list</span><span class="err">&#39;</span>
+  <span class="nx">arguments</span> <span class="nx">to</span> <span class="nx">pass</span> <span class="nx">on</span> <span class="nx">each</span> <span class="k">go</span> <span class="nx">tool</span> <span class="nx">link</span> <span class="nx">invocation</span><span class="p">.</span>
+  <span class="c1">// 指定需要传递给 go tool link 命令的标记的列表
+</span><span class="c1"></span>  
+<span class="o">-</span> <span class="nx">tags</span> <span class="err">&#39;</span><span class="nx">tag</span> <span class="nx">list</span><span class="err">&#39;</span>
+  <span class="nx">a</span> <span class="nx">list</span> <span class="nx">of</span> <span class="nx">build</span> <span class="nx">tags</span> <span class="nx">to</span> <span class="nx">consider</span> <span class="nx">satisfied</span> <span class="nx">during</span> <span class="nx">the</span> <span class="nx">build</span><span class="p">.</span>
+    <span class="nx">See</span> <span class="nx">the</span> <span class="nx">documentation</span> <span class="k">for</span> <span class="nx">the</span> <span class="k">go</span><span class="o">/</span><span class="nx">build</span> <span class="kn">package</span> <span class="k">for</span>
+    <span class="nx">more</span> <span class="nx">information</span> <span class="nx">about</span> <span class="nx">build</span> <span class="nx">tags</span><span class="p">.</span>
+    <span class="c1">// 指定在实际编译期间需要受理的编译标签（也可被称为编译约束）的列表
+</span></code></pre></div><p><code>-ldflags &quot;-w -s&quot;</code> 选项目的是获取最小的二进制文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ go tool link --help
+...
+-s
+    Omit the symbol table and debug information.
+    // 关闭符号表生成和调试信息
+-w
+    Omit the DWARF symbol table.
+    // 关闭 DWARP 调试信息，无法在二进制文件上使用 gdb 的特定功能如设置断点获取堆栈跟踪信息。
+</code></pre></div><p><code>-gcflags &quot;-N -l&quot;</code> 选项目的是在编译过程中禁止内联优化，加快编译速度减少开销。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ go tool compile --help
+...
+-N
+    Disable optimizations.
+    // 禁止编译优化
+-l
+    Disable inlining.
+    // 禁止内联，一定程度上减少可执行程序大小
+</code></pre></div><h3 id="参考">参考</h3>
+<ul>
+<li>
+<p><a href="https://github.com/hyper0x/go_command_tutorial/blob/master/0.1.md">https://github.com/hyper0x/go_command_tutorial/blob/master/0.1.md</a></p>
+</li>
+<li>
+<p><a href="https://stackoverflow.com/questions/51508150/standard-init-linux-go190-exec-user-process-caused-no-such-file-or-directory">https://stackoverflow.com/questions/51508150/standard-init-linux-go190-exec-user-process-caused-no-such-file-or-directory</a></p>
+</li>
+</ul></div>
+                    <div class="post_footer">
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://blog.abnerzhao.com">Designed by Abnerzhao,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+
+    <script src="https://blog.abnerzhao.com/js/jquery-3.5.1.min.js"></script>
+<link href="https://blog.abnerzhao.com/css/fancybox.min.css" rel="stylesheet">
+<script src="https://blog.abnerzhao.com/js/fancybox.min.js"></script>
+<script src="https://blog.abnerzhao.com/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+</body>
+
+</html>

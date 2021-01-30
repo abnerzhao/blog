@@ -96,6 +96,36 @@
 
 <div class="post animated fadeInDown">
     <div class="post_title">
+        <h2><a href='/posts/go-build/'>go build 编译优化</a></h2>
+    </div>
+    
+    <div class="list">
+        <div class="post_content markdown">
+            <p><p>Go 项目使用容器运行时报以下错误：</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">standard_init_linux.go:207: exec user process caused &#34;no such file or directory&#34;
+</code></pre></div><p>网上查了一下原因：<code>CGO has to be disabled for alpine.</code></p>
+<p>Dockerfile 中使用的是 <code>golang:1.14-alpine</code> 镜像，Go build 编译参数如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">GOOS=linux GOARCH=amd64 go build -ldflags &#34;-w -s&#34; -gcflags &#34;-N -l&#34; -mod=vendor -o ./bin/mytest .
+</code></pre></div><p>显而易见添加 <code>CGO_ENABLED=0</code> 编译之后即可运行成功。<code>CGO_ENABLED</code> 默认是开启的，允许在 Go 代码中调用 C 代码。</p>
+<p><code>go build</code> 编译生产环境下使用的可执行文件一般会加一些优化参数，简单复习一下。</p>......</p>
+        </div>
+    </div>
+    
+    <div class="post_footer">
+        <div class="meta">
+            <div class="info">
+                <span class="field">
+                    <i class="ri-map-pin-time-line"></i>
+                    <span class="date">2021.01.30</span>
+                </span>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="post animated fadeInDown">
+    <div class="post_title">
         <h2><a href='/posts/grafana-wechat-alert/'>Grafana 企业微信告警配置</a></h2>
     </div>
     
@@ -216,34 +246,15 @@
     </div>
 </div>
 
-<div class="post animated fadeInDown">
-    <div class="post_title">
-        <h2><a href='/posts/my2019/'>2019 小结</a></h2>
-    </div>
-    
-    <div class="list">
-        <div class="post_content markdown">
-            <p><h3 id="加班和宅">加班和宅</h3>
-<p>2019 年总结起来就两个关键字：<code>加班</code>和<code>宅</code>，在肥宅的道路上越走越远。</p>
-<p>由于加班较多，锻炼的时间相对减少，运动量直线下降。2019 年总共跑步 147 公里，相较于 2018 年 400 公里的运动量直接被腰斩。伴随着运动量地降低，体重也随着飙升。长胖了 10 斤，算是 2019 年的小小收获吧(囧)。不过唯一值得庆幸的是羽毛球一直坚持了下来，有一群自律的球友还是很幸福的。还是要通过外部条件去督促和约束自己，人一旦散漫下来过日便会失去些许活力。生命在于运动，希望新的一年运动量不要再创新低。</p>......</p>
-        </div>
-    </div>
-    
-    <div class="post_footer">
-        <div class="meta">
-            <div class="info">
-                <span class="field">
-                    <i class="ri-map-pin-time-line"></i>
-                    <span class="date">2020.01.05</span>
-                </span>
-                
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <div class="pagination">
+    
+    
+    
+    <a href="/page/2/" class="next">
+        
+    </a>
+    
     
 </div>
         </div>

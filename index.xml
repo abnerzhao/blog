@@ -8,10 +8,25 @@
 合一</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 14 Jan 2021 12:57:32 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 30 Jan 2021 17:16:40 +0800</lastBuildDate>
     
 	<atom:link href="https://blog.abnerzhao.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>go build 编译优化</title>
+      <link>https://blog.abnerzhao.com/posts/go-build/</link>
+      <pubDate>Sat, 30 Jan 2021 17:16:40 +0800</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/go-build/</guid>
+      <description>&lt;p&gt;Go 项目使用容器运行时报以下错误：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;standard_init_linux.go:207: exec user process caused &amp;#34;no such file or directory&amp;#34;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;网上查了一下原因：&lt;code&gt;CGO has to be disabled for alpine.&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Dockerfile 中使用的是 &lt;code&gt;golang:1.14-alpine&lt;/code&gt; 镜像，Go build 编译参数如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;GOOS=linux GOARCH=amd64 go build -ldflags &amp;#34;-w -s&amp;#34; -gcflags &amp;#34;-N -l&amp;#34; -mod=vendor -o ./bin/mytest .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;显而易见添加 &lt;code&gt;CGO_ENABLED=0&lt;/code&gt; 编译之后即可运行成功。&lt;code&gt;CGO_ENABLED&lt;/code&gt; 默认是开启的，允许在 Go 代码中调用 C 代码。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;go build&lt;/code&gt; 编译生产环境下使用的可执行文件一般会加一些优化参数，简单复习一下。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Grafana 企业微信告警配置</title>
