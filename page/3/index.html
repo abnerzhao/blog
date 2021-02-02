@@ -96,86 +96,19 @@
 
 <div class="post animated fadeInDown">
     <div class="post_title">
-        <h2><a href='/posts/mysql-utf8/'>MySQL 中 utf8 和 utf8mb4 编码</a></h2>
+        <h2><a href='/posts/pipenv-quick-start/'>Pipenv 快速上手</a></h2>
     </div>
     
     <div class="list">
         <div class="post_content markdown">
-            <p><p>最近在开发过程中碰到数据库写入失败的情况。</p>
-<blockquote>
-<p>&ldquo;Incorrect string value: &lsquo;\xF0\x9F\x91\x91M\xE3&hellip;&rdquo; for column &lsquo;nick_name&rsquo; at row 1&rdquo;</p>
-</blockquote>
-<p>排查发现是由于该用户的昵称含有 <code>emoji</code> 表情包导致的，含有表情包和普通字符串有什么区别呢？</p>
-<p>原来 MySQL 的默认 <code>utf8</code> (也称 <code>utf8mb3</code>) 只支持三个字节的字符。而 <code>emoji</code> 表情包需要四个字节表示。所以存储就会报错。不过 MySQL 在 5.5.3 之后增加了这个 <code>utf8mb4</code> 的编码，用来兼容四字节的 Unicode。</p>
-<p>为了解决这个问题，需要修改数据库的字符编码。</p>......</p>
-        </div>
-    </div>
-    
-    <div class="post_footer">
-        <div class="meta">
-            <div class="info">
-                <span class="field">
-                    <i class="ri-map-pin-time-line"></i>
-                    <span class="date">2020.02.25</span>
-                </span>
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="post animated fadeInDown">
-    <div class="post_title">
-        <h2><a href='/posts/my2019/'>2019 小结</a></h2>
-    </div>
-    
-    <div class="list">
-        <div class="post_content markdown">
-            <p><h3 id="加班和宅">加班和宅</h3>
-<p>2019 年总结起来就两个关键字：<code>加班</code>和<code>宅</code>，在肥宅的道路上越走越远。</p>
-<p>由于加班较多，锻炼的时间相对减少，运动量直线下降。2019 年总共跑步 147 公里，相较于 2018 年 400 公里的运动量直接被腰斩。伴随着运动量地降低，体重也随着飙升。长胖了 10 斤，算是 2019 年的小小收获吧(囧)。不过唯一值得庆幸的是羽毛球一直坚持了下来，有一群自律的球友还是很幸福的。还是要通过外部条件去督促和约束自己，人一旦散漫下来过日便会失去些许活力。生命在于运动，希望新的一年运动量不要再创新低。</p>......</p>
-        </div>
-    </div>
-    
-    <div class="post_footer">
-        <div class="meta">
-            <div class="info">
-                <span class="field">
-                    <i class="ri-map-pin-time-line"></i>
-                    <span class="date">2020.01.05</span>
-                </span>
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="post animated fadeInDown">
-    <div class="post_title">
-        <h2><a href='/posts/kong-api-gateway/'>API 网关 Kong 实践</a></h2>
-    </div>
-    
-    <div class="list">
-        <div class="post_content markdown">
-            <p><blockquote>
-<p>Kong is a cloud-native, fast, scalable, and distributed Microservice Abstraction Layer (also known as an API Gateway, API Middleware or in some cases Service Mesh). Made available as an open-source project in 2015, its core values are high performance and extensibility.</p>
-</blockquote>
+            <p><p><a href="https://pipenv.readthedocs.io/en/latest/">Pipenv</a> 是 Python 官方推荐的的包管理工具，它集成了 virtualenv、pyenv 和 pip 三者的功能。 Pipenv 是 requests 的作者 Kenneth Reitz 大神开发了用于创建和管理 Python 虚拟环境的工具。</p>
+<p>Pipenv 主要解决了以下问题：</p>
 <ul>
-<li><a href="https://docs.konghq.com/">官方文档</a></li>
-<li><a href="https://github.com/Kong/kong">GitHub</a></li>
-</ul>
-<blockquote>
-<h4 id="实体对象">实体对象</h4>
-</blockquote>
-<ul>
-<li>Router：请求转发规则，将请求转发给 Service</li>
-<li>Services：多个 Upstream 集合，Router 的转发目标</li>
-<li>Consumers：消费者</li>
-<li>Plugin：插件，可以是全局的也可以配置到特定的 Router、Services、Consumers</li>
-<li>Certificate：https 证书</li>
-<li>Sni：域名与 Certificate 的绑定</li>
-<li>Upstream：负载均衡策略</li>
-<li>Target：最终处理请求的后端服务</li>
+<li>不用再单独使用 virtualenv 和 pip，而是将两者结合</li>
+<li>不用再维护 requirements.txt，使用 Pipfile 和 Pipfile.lock 来代替</li>
+<li>可以在开发环境使用多个 Python 版本</li>
+<li>在安装的 pyenv 条件下，可以自动安装需要的 Python 版本</li>
+<li>随时查看图形化的依赖关系</li>
 </ul>......</p>
         </div>
     </div>
@@ -185,7 +118,7 @@
             <div class="info">
                 <span class="field">
                     <i class="ri-map-pin-time-line"></i>
-                    <span class="date">2019.08.12</span>
+                    <span class="date">2019.01.18</span>
                 </span>
                 
             </div>
@@ -195,25 +128,51 @@
 
 <div class="post animated fadeInDown">
     <div class="post_title">
-        <h2><a href='/posts/vue-cli-create-project/'>使用 Vue CLI 快速创建 Vue 项目</a></h2>
+        <h2><a href='/posts/%E6%91%84%E5%BD%B1%E7%9F%A5%E8%AF%86%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/'>摄影知识快速入门</a></h2>
     </div>
     
     <div class="list">
         <div class="post_content markdown">
-            <p><p><a href="https://cli.vuejs.org/zh/guide/">Vue CLI</a> 是一个基于 Vue.js 进行快速开发的完整系统，提供：</p>
+            <p><h2 id="前言">前言</h2>
+<p>三流的摄影师比器材，二流的摄影师比技术，一流的摄影师比思想。</p>
+<blockquote>
+<p>&ldquo;照片从来不能解决问题，它总是在不断的提出问题：为什么会这样？如果你能不断的提出问题，你就会不断的按下快门，把你的思想和疑问传达出来。如果观众看过你的照片后也良久驻足，思考着你的思考，疑问着你的疑问，那您就快接近摄影的最高境界了&rdquo;        《论摄影》</p>
+</blockquote>
+<h2 id="摄影名词">摄影名词</h2>
+<h3 id="iso">ISO</h3>
+<p>ISO（感光度）是CCD（Charge Coupled Device，电子感光芯片）或是胶卷对光线的敏感程度。</p>......</p>
+        </div>
+    </div>
+    
+    <div class="post_footer">
+        <div class="meta">
+            <div class="info">
+                <span class="field">
+                    <i class="ri-map-pin-time-line"></i>
+                    <span class="date">2018.12.23</span>
+                </span>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="post animated fadeInDown">
+    <div class="post_title">
+        <h2><a href='/posts/django-best-practices/'>Django 最佳实践(译)</a></h2>
+    </div>
+    
+    <div class="list">
+        <div class="post_content markdown">
+            <p><h2 id="基础">基础</h2>
 <ul>
-<li>通过 @vue/cli 搭建交互式的项目脚手架</li>
-<li>通过 @vue/cli + @vue/cli-service-global 快速开始零配置原型开发</li>
-<li>一个运行时依赖 (@vue/cli-service)，该依赖
-<ul>
-<li>可升级</li>
-<li>基于 webpack 构建，并带有合理的默认配置</li>
-<li>可以通过项目内的配置文件进行配置</li>
-<li>可以通过插件进行扩展</li>
-</ul>
-</li>
-<li>一个丰富的官方插件集合，集成了前端生态中最好的工具</li>
-<li>一套完全图形化的创建和管理 Vue.js 项目的用户界面</li>
+<li>使用 <a href="https://pipenv.readthedocs.io">Pipenv</a> 管理虚拟环境</li>
+<li>使用 <a href="https://docs.djangoproject.com/en/dev/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project">自定义用户模型</a></li>
+<li>尽可能地使用<a href="https://docs.djangoproject.com/en/dev/topics/class-based-views/generic-display/">通用类视图 GCBV</a>，然后才是<a href="https://docs.djangoproject.com/en/dev/topics/class-based-views/">类视图</a>而不是函数视图</li>
+<li>使用<a href="https://github.com/joke2k/django-environ">环境变量</a>来管理像 <code>SECRET_KET</code> 这样的变量</li>
+<li>使用<a href="https://simpleisbetterthancomplex.com/tips/2017/07/03/django-tip-20-working-with-multiple-settings-modules.html">多 setting 文件</a>，DEBUG 模式不允许出现在生产环境中</li>
+<li>本地使用基于 <a href="https://wsvincent.com/django-docker-postgresql/">Docker</a> 的 Postgres 数据库</li>
+<li>进行单元测试和集成测试，越多越好</li>
 </ul>......</p>
         </div>
     </div>
@@ -223,7 +182,52 @@
             <div class="info">
                 <span class="field">
                     <i class="ri-map-pin-time-line"></i>
-                    <span class="date">2019.01.19</span>
+                    <span class="date">2018.12.19</span>
+                </span>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="post animated fadeInDown">
+    <div class="post_title">
+        <h2><a href='/posts/queryset-api-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/'>QuerySet API 学习笔记</a></h2>
+    </div>
+    
+    <div class="list">
+        <div class="post_content markdown">
+            <p><h3 id="querysets-evaluated">QuerySets evaluated</h3>
+<p>可以创建、过滤、切片和传递查询集而不用真实操作数据库。在你对查询集做求值之前，不会发生任何实际的数据库操作。</p>
+<p>对于查询集我们使用以下方法进行求值：</p>
+<ul>
+<li>Iteration</li>
+<li>Slicing</li>
+<li>Pickling/Caching</li>
+<li>repr()</li>
+<li>len()</li>
+<li>list()</li>
+<li>bool()</li>
+</ul>
+<h3 id="queryset-api">QuerySet API</h3>
+<h4 id="返回新的查询集方法">返回新的查询集方法</h4>
+<ul>
+<li>filter</li>
+</ul>
+<p>返回一个新的 QuerySet 包含给定参数的查询匹配对象，更复杂的查询可以使用 Q 对象。</p>
+<ul>
+<li>exclude</li>
+</ul>
+<p>返回一个新的 QuerySet，它包含不满足给定的查找参数的对象，更复杂的查询同样可以使用 Q 对象。</p>......</p>
+        </div>
+    </div>
+    
+    <div class="post_footer">
+        <div class="meta">
+            <div class="info">
+                <span class="field">
+                    <i class="ri-map-pin-time-line"></i>
+                    <span class="date">2018.08.19</span>
                 </span>
                 
             </div>
@@ -235,12 +239,12 @@
 <div class="pagination">
     
     
-    <a href="/" class="pre">
+    <a href="/page/2/" class="pre">
         
     </a>
     
     
-    <a href="/page/3/" class="next">
+    <a href="/page/4/" class="next">
         
     </a>
     

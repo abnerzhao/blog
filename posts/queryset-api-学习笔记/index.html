@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abnerzhao" />
+	
+	
+	
+	<title>QuerySet API 学习笔记 ｜ 知行
+合一</title>
+	
+    
+    
+    <meta name="description" content="QuerySets evaluated 可以创建、过滤、切片和传递查询集而不用真实操作数据库。在你对查询集做求值之前，不会发生任何实际的数据库操作。
+对于查询集我们使用以下方法进行求值：
+ Iteration Slicing Pickling/Caching repr() len() list() bool()  QuerySet API 返回新的查询集方法  filter  返回一个新的 QuerySet 包含给定参数的查询匹配对象，更复杂的查询可以使用 Q 对象。
+ exclude  返回一个新的 QuerySet，它包含不满足给定的查找参数的对象，更复杂的查询同样可以使用 Q 对象。
+" />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, theme, zozo" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://blog.abnerzhao.com/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">Archive</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://blog.abnerzhao.com/">
+                    <span>知行
+合一</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://www.douban.com/people/66794775/" title="douban" target="_blank"><i class="ri-douban-fill"></i></a>
+                
+                
+                
+                <a href="https://github.com/abnerzhao" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                <a href="https://blog.abnerzhao.com/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/queryset-api-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/'>QuerySet API 学习笔记</a></h2>
+                        <span class="date">2018.08.19</span>
+                    </div>
+                    <div class="post_content markdown"><h3 id="querysets-evaluated">QuerySets evaluated</h3>
+<p>可以创建、过滤、切片和传递查询集而不用真实操作数据库。在你对查询集做求值之前，不会发生任何实际的数据库操作。</p>
+<p>对于查询集我们使用以下方法进行求值：</p>
+<ul>
+<li>Iteration</li>
+<li>Slicing</li>
+<li>Pickling/Caching</li>
+<li>repr()</li>
+<li>len()</li>
+<li>list()</li>
+<li>bool()</li>
+</ul>
+<h3 id="queryset-api">QuerySet API</h3>
+<h4 id="返回新的查询集方法">返回新的查询集方法</h4>
+<ul>
+<li>filter</li>
+</ul>
+<p>返回一个新的 QuerySet 包含给定参数的查询匹配对象，更复杂的查询可以使用 Q 对象。</p>
+<ul>
+<li>exclude</li>
+</ul>
+<p>返回一个新的 QuerySet，它包含不满足给定的查找参数的对象，更复杂的查询同样可以使用 Q 对象。</p>
+<ul>
+<li>annotate</li>
+</ul>
+<p>使用提供的查询表达式给 QuerySet 的每个对象增加注释，可以理解为增加一个新的属性。</p>
+<p>查询表达式可以是一个简单的值、模型（或关联模型）字段的一个引用或对查询集中的对象一个聚合函数（平均值、和等）</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; from django.db.models import Count
+&gt;&gt;&gt; q = Blog.objects.annotate(Count(&#39;entry&#39;))
+&gt;&gt;&gt; q[0].name
+&#39;Blogasaurus&#39;
+&gt;&gt;&gt; q[0].entry__count # 新增的 entry__count 属性
+42
+
+# 指定注释名称
+&gt;&gt;&gt; q = Blog.objects.annotate(number_of_entries=Count(&#39;entry&#39;))
+&gt;&gt;&gt; q[0].number_of_entries
+42
+</code></pre></div><p>使用 annotate 需要用 django.db.models 的统计方法。除了 Count 统计方法之外，还有 Max、Min、Sum、Avg 等方法。</p>
+<ul>
+<li>order_by</li>
+</ul>
+<p>指定 QuerySet 排序</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"># 升序
+&gt;&gt;&gt; Author.objects.filter().order_by(&#39;name&#39;)
+&lt;QuerySet [&lt;Author: abner&gt;, &lt;Author: mike&gt;]&gt;
+ 
+# 降序
+&gt;&gt;&gt; Author.objects.filter().order_by(&#39;-name&#39;)
+&lt;QuerySet [&lt;Author: mike&gt;, &lt;Author: abner&gt;]&gt;
+
+# 随机排序，不推荐使用(速度慢、查询昂贵)
+&gt;&gt;&gt; Author.objects.order_by(&#39;?&#39;)
+</code></pre></div><ul>
+<li>reverse</li>
+</ul>
+<p>反向排序 QuerySet 中返回的元素</p>
+<ul>
+<li>distinct</li>
+</ul>
+<p>返回一个新的 QuerySet 并去除查询结果中的重复的行</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; CompileRules.objects.values(&#39;business__name&#39;).distinct()
+&lt;QuerySet [{&#39;business__name&#39;: &#39;img.ppdai.com&#39;}, {&#39;business__name&#39;: &#39;api.alert.risk.ppdaicorp.com&#39;}, {&#39;business__name&#39;: &#39;api.antifraud.risk.ppdaicorp.com&#39;}, {&#39;business__name&#39;: &#39;chargingjob.ppdapi.com&#39;}]&gt;
+
+&gt;&gt;&gt; rules = CompileRules.objects.distinct().values_list(&#39;business__name&#39;)
+&gt;&gt;&gt; [i[0] for i in rules]
+[&#39;img.ppdai.com&#39;,&#39;api.alert.risk.ppdaicorp.com&#39;,&#39;api.antifraud.risk.ppdaicorp.com&#39;,&#39;chargingjob.ppdapi.com&#39;]
+</code></pre></div><ul>
+<li>values</li>
+</ul>
+<p>把 QuerySets 当作迭代器使用，返回一个字典，而不是模型实例</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; Author.objects.filter(name=&#39;abner&#39;).values()
+&lt;QuerySet [{&#39;id&#39;: 2, &#39;name&#39;: &#39;abner&#39;, &#39;email&#39;: &#39;abner@163.com&#39;}, {&#39;id&#39;: 3, &#39;name&#39;: &#39;abner&#39;, &#39;email&#39;: &#39;abner@qq.com&#39;}]&gt;
+
+
+# 指定字段
+&gt;&gt;&gt; Author.objects.values(&#39;name&#39;)
+&lt;QuerySet [{&#39;name&#39;: &#39;abner&#39;},{&#39;name&#39;: &#39;abner&#39;},v{&#39;name&#39;: &#39;mike&#39;}]&gt;
+
+
+# 数据库函数，Lower 返回小写形式
+&gt;&gt;&gt; from django.db.models.functions import Lower
+&gt;&gt;&gt; Author.objects.values(lower=Lower(&#39;name&#39;))
+&lt;QuerySet [{&#39;lower&#39;: &#39;dkey&#39;}, {&#39;lower&#39;: &#39;jerry&#39;}, {&#39;lower&#39;: &#39;jerry&#39;}]&gt;
+</code></pre></div><ul>
+<li>values_list</li>
+</ul>
+<p>以元组的形式返回查询集，可以返回特定字段的值，也可以是列表的形式</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; Business.objects.filter(level=1).values_list(&#39;id&#39;, &#39;name&#39;)
+&lt;TreeQuerySet [(3, &#39;借入运营&#39;), (106, &#39;借入借贷&#39;), (219, &#39;数据决策平台&#39;), (225, &#39;数据架构&#39;), (234, &#39;测试&#39;)]&gt;
+
+&gt;&gt;&gt; Business.objects.filter(level=1).values_list(&#39;name&#39;, flat=True)
+&lt;TreeQuerySet [&#39;借入运营&#39;, &#39;借入借贷&#39;, &#39;数据决策平台&#39;, &#39;数据架构&#39;, &#39;测试&#39;]&gt;
+</code></pre></div><ul>
+<li>dates</li>
+</ul>
+<blockquote>
+<p>dates(field, kind, order='ASC&rsquo;)</p>
+</blockquote>
+<p>返回 datetime.date 对象列表，查询的字段应该是 DateField 模型，kind应为&quot;year&rdquo;、&ldquo;month&quot;或&quot;day&rdquo;。隐式的是升序排序</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">1.year:返回字段不同年份值列表
+2.month:返回字段所有不同年/月值列表
+3.day:返回字段所有不同年/月/日值列表
+</code></pre></div><ul>
+<li>datetimes</li>
+</ul>
+<blockquote>
+<p>datetimes(field_name, kind, order='ASC&rsquo;, tzinfo=None)</p>
+</blockquote>
+<p>返回 datetime.datetimes 对象列表，查询的字段应该是 DateField 模型，kind应为&quot;year&rdquo;、&ldquo;month&quot;或&quot;day&rdquo;。隐式的是升序排序</p>
+<ul>
+<li>none</li>
+</ul>
+<p>创建一个不返回任何对象的查询集，访问结果时不会执行任何查询。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; Entry.objects.none()
+[]
+&gt;&gt;&gt; from django.db.models.query import EmptyQuerySet
+&gt;&gt;&gt; isinstance(Entry.objects.none(), EmptyQuerySet)
+True
+</code></pre></div><ul>
+<li>all</li>
+</ul>
+<p>所有查询集</p>
+<ul>
+<li>select_related</li>
+</ul>
+<blockquote>
+<p>对于 ForeignKey 和 OneToOneField 等字段，通过添加 select_related，可以把相关的对象在一次查询中查出，之后使用时就不需要再次查数据库</p>
+</blockquote>
+<p>返回一个新的查询集，沿着外键查询关联对象的数据。它会生成一个复杂的查询并引起性能的损耗，但是在以后使用外键关系时将不需要数据库查询。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"># 普通查询
+# Hits the database.
+e = Entry.objects.get(id=5)
+# Hits the database again to get the related Blog object.
+b = e.blog
+
+#select_related 查询 
+# Hits the database.
+e = Entry.objects.select_related(&#39;blog&#39;).get(id=5)
+# Doesn&#39;t hit the database, because e.blog has been prepopulated
+# in the previous query.
+b = e.blog
+</code></pre></div><ul>
+<li>prefetch_related</li>
+</ul>
+<blockquote>
+<p>prefetch_related 对于相关对象会进行一次独立的查询，然后在 Python 中把对象关联起来。所以prefetch_related可以用于many-to-many and many-to-one关系</p>
+</blockquote>
+<ul>
+<li>extra</li>
+</ul>
+<blockquote>
+<p>extra(select=None, where=None, params=None, tables=None, order_by=None, select_params=None)</p>
+</blockquote>
+<p>有些情况下，Django的查询语法难以简单的表达复杂的 WHERE 子句，对于这种情况, Django 提供了 extra() QuerySet 修改机制 — 它能在 QuerySet生成的SQL从句中注入新子句</p>
+<p>extra可以指定一个或多个参数,例如 select, where or tables。 这些参数都不是必须的，但是你至少要使用一个</p>
+<ul>
+<li>defer</li>
+</ul>
+<p>排除不需要的字段，降低性能损耗</p>
+<ul>
+<li>only</li>
+</ul>
+<p>仅选择需要的字段</p>
+<ul>
+<li>using</li>
+</ul>
+<blockquote>
+<p>using(alias) // alias 数据库别名</p>
+</blockquote>
+<p>如果使用多个数据库，改方法可以控制从哪个数据库上求值。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"># queries the database with the &#39;default&#39; alias.
+&gt;&gt;&gt; Entry.objects.all()
+
+# queries the database with the &#39;backup&#39; alias
+&gt;&gt;&gt; Entry.objects.using(&#39;backup&#39;)
+</code></pre></div><ul>
+<li>select_for_update</li>
+</ul>
+<p>返回一个 queryset ，会锁定相关行直到事务结束</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">entries = Entry.objects.select_for_update().filter(author=request.user)
+</code></pre></div><p>所有匹配的行将被锁定，直到事务结束。这意味着可以通过锁防止数据被其它事务修改。</p>
+<ul>
+<li>raw</li>
+</ul>
+<p>接收一个原始的SQL 查询，执行它并返回一个django.db.models.query.RawQuerySet 实例</p>
+<p>Django提供两种方法使用原始SQL进行查询：一种是使用Manager.raw()方法，进行原始查询并返回模型实例；另一种是完全避开模型层，直接执行自定义的SQL语句。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; raw = Author.objects.raw(&#39;select * from polls_author&#39;)
+&gt;&gt;&gt; type(raw)
+&lt;class &#39;django.db.models.query.RawQuerySet&#39;&gt;
+</code></pre></div><h4 id="不返回新的查询集">不返回新的查询集</h4>
+<ul>
+<li>get</li>
+</ul>
+<p>返回按照参数匹配的对象</p>
+<ul>
+<li>create</li>
+</ul>
+<p>创建并保存对象</p>
+<ul>
+<li>get_or_create</li>
+</ul>
+<p>通过给定参数来查询对象，如果对象不存在则会创建一个新的对象</p>
+<p>返回一个由(object, created)组成的元组，元组中的object 是一个查询到的或者是被创建的对象， created 是一个表示是否创建了新的对象的布尔值。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">try:
+    obj = Person.objects.get(first_name=&#39;John&#39;, last_name=&#39;Lennon&#39;)
+except Person.DoesNotExist:
+    obj = Person(first_name=&#39;John&#39;, last_name=&#39;Lennon&#39;, birthday=date(1940, 10, 9))
+    obj.save()
+    
+# use get_or_create
+obj, created = Person.objects.get_or_create(first_name=&#39;John&#39;, last_name=&#39;Lennon&#39;,
+                  defaults={&#39;birthday&#39;: date(1940, 10, 9)})
+</code></pre></div><p>任何传递给 get_or_create() 的关键字参数，除了一个可选的defaults，都将传递给get() 调用</p>
+<blockquote>
+<p>get_or_create() 在Django 视图中的使用。请确保只在POST 请求中使用，除非你有充分的理由。GET 请求不应该对数据有任何影响。而POST 则用于对数据产生影响的请求</p>
+</blockquote>
+<ul>
+<li>update_or_create</li>
+</ul>
+<p>通过给定参数来更新对象，如果对象不存在则会创建一个新的对象</p>
+<p>一个通过给出的kwargs 来更新对象的便捷方法， 如果需要的话创建一个新的对象。defaults 是一个由 (field, value) 对组成的字典，用于更新对象</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">try:
+    obj = Person.objects.get(first_name=&#39;John&#39;, last_name=&#39;Lennon&#39;)
+    for key, value in updated_values.iteritems():
+        setattr(obj, key, value)
+    obj.save()
+except Person.DoesNotExist:
+    updated_values.update({&#39;first_name&#39;: &#39;John&#39;, &#39;last_name&#39;: &#39;Lennon&#39;})
+    obj = Person(**updated_values)
+    obj.save()
+    
+
+# use update_or_create
+obj, created = Person.objects.update_or_create(
+    first_name=&#39;John&#39;, last_name=&#39;Lennon&#39;, defaults=updated_values)    
+</code></pre></div><blockquote>
+<p>和上文描述的get_or_create() 一样，这个方式容易导致竞态条件，如果数据库层级没有前置唯一性它会让多行同时插入。</p>
+</blockquote>
+<ul>
+<li>bulk_create</li>
+</ul>
+<p>批量写入数据</p>
+<ul>
+<li>count</li>
+</ul>
+<p>返回 QuerySet 对象个数</p>
+<ul>
+<li>in_bulk</li>
+</ul>
+<p>获取主键值的列表，并返回将每个主键值映射到具有给定ID的对象的实例的字典。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; Blog.objects.in_bulk([1])
+{1: &lt;Blog: Beatles Blog&gt;}
+&gt;&gt;&gt; Blog.objects.in_bulk([1, 2])
+{1: &lt;Blog: Beatles Blog&gt;, 2: &lt;Blog: Cheddar Talk&gt;}
+&gt;&gt;&gt; Blog.objects.in_bulk([])
+{}
+</code></pre></div><ul>
+<li>iterator</li>
+<li>latest:使用作为日期字段提供的field_name，按日期返回表中的最新对象</li>
+<li>earliest</li>
+<li>first</li>
+<li>last</li>
+<li>aggregate:聚合查询</li>
+</ul>
+<p>返回一个字典，包含根据QuerySet 计算得到的聚合值（平均数、和等等）。aggregate() 的每个参数指定返回的字典中将要包含的值</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; from django.db.models import Count
+&gt;&gt;&gt; q = Blog.objects.aggregate(Count(&#39;entry&#39;))
+{&#39;entry__count&#39;: 16}
+
+&gt;&gt;&gt; q = Blog.objects.aggregate(number_of_entries=Count(&#39;entry&#39;))
+{&#39;number_of_entries&#39;: 16}
+</code></pre></div><ul>
+<li>exists</li>
+</ul>
+<p>exists() 用于搜寻对象是否在QuerySet 中以及QuerySet 是否存在任何对象，特别是QuerySet 比较大的时候。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"># exists 方法比普通方法快
+entry = Entry.objects.get(pk=123)
+if some_queryset.filter(pk=entry.pk).exists():
+    print(&#34;Entry contained in queryset&#34;)
+    
+# 普通方法
+if entry in some_queryset:
+   print(&#34;Entry contained in QuerySet&#34;)    
+   
+# 判断 queryset 是否含有对象，exists 比普通判断快特别是查询集比较大的情况下   
+if some_queryset.exists():
+    print(&#34;There is at least one object in some_queryset&#34;)
+    
+if some_queryset:
+    print(&#34;There is at least one object in some_queryset&#34;)    
+</code></pre></div><ul>
+<li>update</li>
+</ul>
+<p>对指定的字段执行SQL更新查询，并返回匹配的行数</p>
+<ul>
+<li>delete</li>
+</ul>
+<p>对QuerySet中的所有行执行SQL删除查询</p>
+<ul>
+<li>as_manager</li>
+</ul>
+<h4 id="字段查找">字段查找</h4>
+<table>
+<thead>
+<tr>
+<th align="left">方法</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">exact</td>
+<td align="left">精确匹配</td>
+</tr>
+<tr>
+<td align="left">iexact</td>
+<td align="left">忽略大小写精确匹配</td>
+</tr>
+<tr>
+<td align="left">contains</td>
+<td align="left">包含关系</td>
+</tr>
+<tr>
+<td align="left">icontains</td>
+<td align="left">忽略大小写包含关系</td>
+</tr>
+<tr>
+<td align="left">in</td>
+<td align="left">在给定的列表</td>
+</tr>
+<tr>
+<td align="left">gt</td>
+<td align="left">大于</td>
+</tr>
+<tr>
+<td align="left">gte</td>
+<td align="left">大于等于</td>
+</tr>
+<tr>
+<td align="left">lt</td>
+<td align="left">小于</td>
+</tr>
+<tr>
+<td align="left">lte</td>
+<td align="left">小于等于</td>
+</tr>
+<tr>
+<td align="left">startswith</td>
+<td align="left">区分大小写，从开始位置匹配</td>
+</tr>
+<tr>
+<td align="left">istartswith</td>
+<td align="left">不区分大小写，从开始位置匹配</td>
+</tr>
+<tr>
+<td align="left">endswith</td>
+<td align="left">区分大小写，从结束位置匹</td>
+</tr>
+<tr>
+<td align="left">iendswith</td>
+<td align="left">不区分大小写，从结束位置匹配</td>
+</tr>
+<tr>
+<td align="left">range</td>
+<td align="left">范围测试（包含于之中）</td>
+</tr>
+<tr>
+<td align="left">year</td>
+<td align="left">对于日期和日期时间字段，年份匹配</td>
+</tr>
+<tr>
+<td align="left">month</td>
+<td align="left">对于日期和日期时间字段，月份匹配</td>
+</tr>
+<tr>
+<td align="left">day</td>
+<td align="left">对于日期和日期时间字段，天数匹配</td>
+</tr>
+<tr>
+<td align="left">week_day</td>
+<td align="left">星期匹配</td>
+</tr>
+<tr>
+<td align="left">hour</td>
+<td align="left">对于日期时间字段，精确的小时匹配</td>
+</tr>
+<tr>
+<td align="left">minute</td>
+<td align="left">对于日期时间字段，精确的分钟匹配</td>
+</tr>
+<tr>
+<td align="left">second</td>
+<td align="left">对于datetime字段，精确的秒匹配</td>
+</tr>
+<tr>
+<td align="left">isnull</td>
+<td align="left">判断字段值为 True 或 False</td>
+</tr>
+<tr>
+<td align="left">search</td>
+<td align="left">一个Boolean类型的全文搜索，以全文搜索的优势</td>
+</tr>
+<tr>
+<td align="left">regex</td>
+<td align="left">正则表达式</td>
+</tr>
+<tr>
+<td align="left">iregex</td>
+<td align="left">不区分大小写的正则表达式匹配</td>
+</tr>
+</tbody>
+</table>
+<h3 id="参考">参考</h3>
+<p><a href="https://docs.djangoproject.com/en/1.11/ref/models/querysets/">官方文档</a></p>
+<p><a href="https://wizardforcel.gitbooks.io/django-chinese-docs-18/content/2_2_2_QuerySet%20method%20reference.html">Django 1.8 中文文档</a></p></div>
+                    <div class="post_footer">
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://blog.abnerzhao.com">Designed by Abnerzhao,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+
+    <script src="https://blog.abnerzhao.com/js/jquery-3.5.1.min.js"></script>
+<link href="https://blog.abnerzhao.com/css/fancybox.min.css" rel="stylesheet">
+<script src="https://blog.abnerzhao.com/js/fancybox.min.js"></script>
+<script src="https://blog.abnerzhao.com/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+</body>
+
+</html>

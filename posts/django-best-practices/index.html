@@ -8,12 +8,12 @@
 	
 	
 	
-	<title>Categories ｜ 知行
+	<title>Django 最佳实践(译) ｜ 知行
 合一</title>
 	
     
     
-    <meta name="description" content="Hugo theme zozo example site." />
+    <meta name="description" content="基础  使用 Pipenv 管理虚拟环境 使用 自定义用户模型 尽可能地使用通用类视图 GCBV，然后才是类视图而不是函数视图 使用环境变量来管理像 SECRET_KET 这样的变量 使用多 setting 文件，DEBUG 模式不允许出现在生产环境中 本地使用基于 Docker 的 Postgres 数据库 进行单元测试和集成测试，越多越好 " />
     
 
     
@@ -22,9 +22,6 @@
     
 
 	
-	<link rel="alternate" type="application/rss+xml" href="https://blog.abnerzhao.com/categories/index.xml" title="知行
-合一" />
-    
     
     <link rel="shortcut icon" href="https://blog.abnerzhao.com/images/favicon.ico" />
 
@@ -91,16 +88,56 @@
     </div>
 </div>
         <div class="content">
-            <div class="page_tags">
-                <ul>
-                    
-                    
-                </ul>
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/django-best-practices/'>Django 最佳实践(译)</a></h2>
+                        <span class="date">2018.12.19</span>
+                    </div>
+                    <div class="post_content markdown"><h2 id="基础">基础</h2>
+<ul>
+<li>使用 <a href="https://pipenv.readthedocs.io">Pipenv</a> 管理虚拟环境</li>
+<li>使用 <a href="https://docs.djangoproject.com/en/dev/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project">自定义用户模型</a></li>
+<li>尽可能地使用<a href="https://docs.djangoproject.com/en/dev/topics/class-based-views/generic-display/">通用类视图 GCBV</a>，然后才是<a href="https://docs.djangoproject.com/en/dev/topics/class-based-views/">类视图</a>而不是函数视图</li>
+<li>使用<a href="https://github.com/joke2k/django-environ">环境变量</a>来管理像 <code>SECRET_KET</code> 这样的变量</li>
+<li>使用<a href="https://simpleisbetterthancomplex.com/tips/2017/07/03/django-tip-20-working-with-multiple-settings-modules.html">多 setting 文件</a>，DEBUG 模式不允许出现在生产环境中</li>
+<li>本地使用基于 <a href="https://wsvincent.com/django-docker-postgresql/">Docker</a> 的 Postgres 数据库</li>
+<li>进行单元测试和集成测试，越多越好</li>
+</ul>
+<h2 id="安全">安全</h2>
+<ul>
+<li>使用 <a href="https://www.ponycheckup.com/">Pony Checkup</a> 检查网站的安全</li>
+<li>始终使用最新版 Django</li>
+<li>用 <a href="https://docs.djangoproject.com/en/2.0/topics/security/#ssl-https">SSL/HTTPS</a> 部署</li>
+<li>修改 admin 的 url，不要使用默认的 <code>/admin/</code></li>
+</ul>
+<h2 id="第三方包">第三方包</h2>
+<ul>
+<li><a href="https://github.com/jazzband/django-debug-toolbar">django-debug-toolbar</a> 调试消息和数据库查询</li>
+<li><a href="https://github.com/django-extensions/django-extensions">django-extensions</a> 收集了很多扩展库，尤其是 <code>runserver_plus</code></li>
+<li><a href="https://github.com/pennersr/django-allauth">django-allauth</a> 提供社交认证和用户email确认</li>
+<li><a href="https://whitenoise.readthedocs.io">Whitenoise</a> 用于静态文件（也可以使用S3）</li>
+<li><a href="https://sentry.io">Sentry</a> 记录错误日志</li>
+</ul>
+<h2 id="通用">通用</h2>
+<ul>
+<li>最流行的 Django 项目目录结构 <a href="https://github.com/pydanny/cookiecutter-django">cookiecutter-django</a></li>
+<li>使用 <a href="https://www.django-rest-framework.org/">Django Rest Framework</a>来构建 Result API</li>
+</ul>
+<h2 id="参考">参考</h2>
+<p><a href="https://wsvincent.com/django-best-practices/">Django Best Practices</a></p></div>
+                    <div class="post_footer">
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
             </div>
-            <div class="pagination"></div>
         </div>
-        <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
     </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
     <footer class="footer">
     <div class="powered_by">
         <a href="https://blog.abnerzhao.com">Designed by Abnerzhao,</a>

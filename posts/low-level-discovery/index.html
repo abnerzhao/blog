@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abnerzhao" />
+	
+	
+	
+	<title>Zabbix Low-level discovery ｜ 知行
+合一</title>
+	
+    
+    
+    <meta name="description" content=" Low-level discovery provides a way to automatically create items, triggers, and graphs for different entities on a computer. For instance, Zabbix can automatically start monitoring file systems or network interfaces on your machine, without the need to create items for each file system or network interface manually.
+  In Zabbix, four types of item discovery are supported out of the box:
+  discovery of file systems; discovery of network interfaces; discovery of CPUs and CPU cores; discovery of SNMP OIDs.   A user can define their own types of discovery, provided they follow a particular JSON protocol.
+" />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, theme, zozo" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://blog.abnerzhao.com/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">Archive</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://blog.abnerzhao.com/">
+                    <span>知行
+合一</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://www.douban.com/people/66794775/" title="douban" target="_blank"><i class="ri-douban-fill"></i></a>
+                
+                
+                
+                <a href="https://github.com/abnerzhao" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                <a href="https://blog.abnerzhao.com/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/low-level-discovery/'>Zabbix Low-level discovery</a></h2>
+                        <span class="date">2017.01.21</span>
+                    </div>
+                    <div class="post_content markdown"><blockquote>
+<p>Low-level discovery provides a way to automatically create items, triggers, and graphs for different entities on a computer. For instance, Zabbix can automatically start monitoring file systems or network interfaces on your machine, without the need to create items for each file system or network interface manually.</p>
+</blockquote>
+<blockquote>
+<p>In Zabbix, four types of item discovery are supported out of the box:</p>
+</blockquote>
+<ul>
+<li>discovery of file systems;</li>
+<li>discovery of network interfaces;</li>
+<li>discovery of CPUs and CPU cores;</li>
+<li>discovery of SNMP OIDs.</li>
+</ul>
+<blockquote>
+<p>A user can define their own types of discovery, provided they follow a particular JSON protocol.</p>
+</blockquote>
+<p>简而言之，zabbix的低水平发现就是减少我们的重复操作，能够根据不同的监控实例自动添加监控项、触发器和图形。
+<code>vfs.fs.discovery</code>和<code>net.if.discovery</code>就是zabbix自带的自动发现键值，能够自动识别agent端的文件挂载情况和网卡信息。还有基于SNMP OID的自动发现键值，能够自动识别交换机的所有端口信息。
+当我们的一个服务有多个端口需要监控时，我通常是先在agent端写好监控脚本，定义键值，然后再为每个端口新建监控项、触发器和图形（当然你可以直接克隆），但还是免不了一些重复操作。下面就通过一个例子看一下Low-level discovery是如何工作的：</p>
+<h3 id="监控需求">监控需求：</h3>
+<p>监控udp端口12222-12229的端口状态</p>
+<h3 id="实现步骤">实现步骤：</h3>
+<h4 id="1以json格式自定义发现类型">1.以json格式自定义发现类型</h4>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="n">cat</span> <span class="n">udpport_discovery</span><span class="o">.</span><span class="n">py</span>
+<span class="c1">#!/usr/bin/env python</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">datetime</span><span class="o">,</span><span class="nn">socket</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&#34;__main__&#34;</span><span class="p">:</span>
+    <span class="n">zbxkey</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">zbx_d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">zbx_d</span><span class="p">[</span><span class="s2">&#34;data&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">host_name</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;12222&#39;</span><span class="p">,</span> <span class="s1">&#39;12223&#39;</span><span class="p">,</span> <span class="s1">&#39;12224&#39;</span><span class="p">,</span> <span class="s1">&#39;12225&#39;</span><span class="p">,</span> <span class="s1">&#39;12226&#39;</span><span class="p">,</span> <span class="s1">&#39;12227&#39;</span><span class="p">,</span> <span class="s1">&#39;12228&#39;</span><span class="p">,</span> <span class="s1">&#39;12229&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">d</span><span class="p">[</span><span class="s2">&#34;{#</span><span class="si">%s</span><span class="s2">}&#34;</span> <span class="o">%</span> <span class="n">zbxkey</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span>
+        <span class="n">zbx_d</span><span class="p">[</span><span class="s2">&#34;data&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">print</span> <span class="nb">str</span><span class="p">(</span><span class="n">zbx_d</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;&#39;&#34;</span><span class="p">,</span><span class="s1">&#39;&#34;&#39;</span><span class="p">)</span>
+</code></pre></div><h4 id="2定义配置文件">2.定义配置文件</h4>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat udp_port.conf
+<span class="c1">#############Template_Udp#############</span>
+<span class="nv">UserParameter</span><span class="o">=</span>status<span class="o">[</span>*<span class="o">]</span>,/home/prod/softwares/zabbix/etc/zabbix_agentd.conf.d/udp_port.sh <span class="nv">$1</span>
+<span class="nv">UserParameter</span><span class="o">=</span>discovery.udpport,/home/prod/softwares/zabbix/etc/zabbix_agentd.conf.d/udpport_discovery.py PORT
+</code></pre></div><h4 id="3检测自定义键值">3.检测自定义键值</h4>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ python udpport_discovery.py PORT
+<span class="o">{</span><span class="s2">&#34;data&#34;</span>: <span class="o">[{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12222&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12223&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12224&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12225&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12226&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12227&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12228&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12229&#34;</span><span class="o">}]}</span>
+</code></pre></div><p>zabbix server端测试：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ ./zabbix_get -s 10.0.0.206 -k discovery.udpport
+<span class="o">{</span><span class="s2">&#34;data&#34;</span>: <span class="o">[{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12222&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12223&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12224&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12225&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12226&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12227&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12228&#34;</span><span class="o">}</span>, <span class="o">{</span><span class="s2">&#34;{#PORT}&#34;</span>: <span class="s2">&#34;12229&#34;</span><span class="o">}]}</span>
+</code></pre></div><h4 id="4编写监控脚本">4.编写监控脚本</h4>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cat udp_port.sh
+<span class="nv">Port</span><span class="o">=</span><span class="nv">$1</span>
+<span class="k">case</span> <span class="nv">$Port</span> in
+        12222<span class="o">)</span>   netstat -nupl <span class="p">|</span> grep <span class="m">12222</span> <span class="p">|</span>wc -l<span class="p">;;</span>
+        12223<span class="o">)</span>   netstat -nupl <span class="p">|</span> grep <span class="m">12223</span> <span class="p">|</span>wc -l<span class="p">;;</span>
+        12224<span class="o">)</span>   netstat -nupl <span class="p">|</span> grep <span class="m">12224</span> <span class="p">|</span>wc -l<span class="p">;;</span>
+        12225<span class="o">)</span>   netstat -nupl <span class="p">|</span> grep <span class="m">12225</span> <span class="p">|</span>wc -l<span class="p">;;</span>
+        12226<span class="o">)</span>   netstat -nupl <span class="p">|</span> grep <span class="m">12226</span> <span class="p">|</span>wc -l<span class="p">;;</span>
+        12227<span class="o">)</span>   netstat -nupl <span class="p">|</span> grep <span class="m">12227</span> <span class="p">|</span>wc -l<span class="p">;;</span>
+        12228<span class="o">)</span>   netstat -nupl <span class="p">|</span> grep <span class="m">12228</span> <span class="p">|</span>wc -l<span class="p">;;</span>
+        12229<span class="o">)</span>   netstat -nupl <span class="p">|</span> grep <span class="m">12229</span> <span class="p">|</span>wc -l<span class="p">;;</span>
+        *<span class="o">)</span> <span class="nb">echo</span> Error<span class="p">;</span> <span class="nb">exit</span> 1<span class="p">;;</span>
+<span class="k">esac</span>
+</code></pre></div><h4 id="5web添加模板">5.web添加模板</h4>
+<p><img src="/img/01256527-8987-40C4-9C65-2FC6D1D8610F.png" alt=""></p>
+<p><img src="/img/E604037B-096A-4789-9AB3-A47B14020FB2.png" alt=""></p>
+<h4 id="6将模板关联对应机器">6.将模板关联对应机器</h4>
+<h3 id="参考">参考</h3>
+<p><a href="https://www.zabbix.com/documentation/2.4/manual/discovery/low_level_discovery">LDD官方文档</a></p></div>
+                    <div class="post_footer">
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://blog.abnerzhao.com">Designed by Abnerzhao,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+
+    <script src="https://blog.abnerzhao.com/js/jquery-3.5.1.min.js"></script>
+<link href="https://blog.abnerzhao.com/css/fancybox.min.css" rel="stylesheet">
+<script src="https://blog.abnerzhao.com/js/fancybox.min.js"></script>
+<script src="https://blog.abnerzhao.com/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+</body>
+
+</html>

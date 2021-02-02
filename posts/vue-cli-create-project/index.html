@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abnerzhao" />
+	
+	
+	
+	<title>使用 Vue CLI 快速创建 Vue 项目 ｜ 知行
+合一</title>
+	
+    
+    
+    <meta name="description" content="Vue CLI 是一个基于 Vue.js 进行快速开发的完整系统，提供：
+ 通过 @vue/cli 搭建交互式的项目脚手架 通过 @vue/cli &#43; @vue/cli-service-global 快速开始零配置原型开发 一个运行时依赖 (@vue/cli-service)，该依赖  可升级 基于 webpack 构建，并带有合理的默认配置 可以通过项目内的配置文件进行配置 可以通过插件进行扩展   一个丰富的官方插件集合，集成了前端生态中最好的工具 一套完全图形化的创建和管理 Vue.js 项目的用户界面 " />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, theme, zozo" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://blog.abnerzhao.com/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">Archive</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://blog.abnerzhao.com/">
+                    <span>知行
+合一</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://www.douban.com/people/66794775/" title="douban" target="_blank"><i class="ri-douban-fill"></i></a>
+                
+                
+                
+                <a href="https://github.com/abnerzhao" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                <a href="https://blog.abnerzhao.com/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/vue-cli-create-project/'>使用 Vue CLI 快速创建 Vue 项目</a></h2>
+                        <span class="date">2019.01.19</span>
+                    </div>
+                    <div class="post_content markdown"><p><a href="https://cli.vuejs.org/zh/guide/">Vue CLI</a> 是一个基于 Vue.js 进行快速开发的完整系统，提供：</p>
+<ul>
+<li>通过 @vue/cli 搭建交互式的项目脚手架</li>
+<li>通过 @vue/cli + @vue/cli-service-global 快速开始零配置原型开发</li>
+<li>一个运行时依赖 (@vue/cli-service)，该依赖
+<ul>
+<li>可升级</li>
+<li>基于 webpack 构建，并带有合理的默认配置</li>
+<li>可以通过项目内的配置文件进行配置</li>
+<li>可以通过插件进行扩展</li>
+</ul>
+</li>
+<li>一个丰富的官方插件集合，集成了前端生态中最好的工具</li>
+<li>一套完全图形化的创建和管理 Vue.js 项目的用户界面</li>
+</ul>
+<h3 id="安装">安装</h3>
+<p>Vue CLI 需要 Node 环境，确保已经安装 Node 环境和 npm 包管理工具</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ npm install -g @vue/cli
+</code></pre></div><h3 id="创建项目">创建项目</h3>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ vue create hello-world
+Vue CLI v3.3.0
+? Please pick a preset: (Use arrow keys)
+❯ default (babel, eslint)  //默认选项提供 babel 和 eslint 支持，适合快速创建一个新项目的原型
+  Manually select features //手动选择特性，提供了更多的选项，它们是面向生产的项目更加需要的
+</code></pre></div><p>上下键选择、Enter 选中，我们选择第二项手动选择特性</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Vue CLI v3.3.0
+? Please pick a preset: Manually select features
+? Check the features needed for your project: (Press &lt;space&gt; to select, &lt;a&gt; to toggle all, &lt;i&gt; to invert selection)
+❯◉ Babel  //支持babel
+ ◯ TypeScript  //支持使用 TypeScript 书写源码
+ ◯ Progressive Web App (PWA) Support
+ ◯ Router //支持 vue-router 
+ ◯ Vuex  //支持 vuex 
+ ◯ CSS Pre-processors  //支持 CSS 预处理器
+ ◉ Linter / Formatter  //支持代码风格检查和格式化
+ ◯ Unit Testing  //支持单元测试
+ ◯ E2E Testing  //支持 E2E 测试
+</code></pre></div><p>基于开发常见的项目，同时兼顾项目健壮性的原则，选择如下选项：</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Vue CLI v3.3.0
+? Please pick a preset: Manually select features
+? Check the features needed for your project:
+ ◉ Babel
+ ◉ TypeScript
+ ◯ Progressive Web App (PWA) Support
+ ◉ Router
+ ◉ Vuex
+ ◉ CSS Pre-processors
+ ◉ Linter / Formatter
+❯◉ Unit Testing
+ ◯ E2E Testing
+</code></pre></div><p>开发 Vue 组件时是否使用 class 风格的写法 （是）</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Vue CLI v3.3.0
+? Please pick a preset: Manually select features
+? Check the features needed for your project: Babel, TS, Router, Vuex, CSS Pre-processors, Linter, Unit
+? Use class-style component syntax? (Y/n) Y
+</code></pre></div><p>是否使用 babel 工具自动为转换后的 TypeScript 代码注入 polyfiills （是）</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">? Use Babel alongside TypeScript for auto-detected polyfills? (Y/n) Y
+</code></pre></div><p>vue-router 是否使用 history 模式 （否，使用默认 hash 模式）</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">? Use history mode for router? (Requires proper server setup for index fallback in production) (Y/n) n
+</code></pre></div><p>项目里面使用哪种 CSS 预处理语言（选择  LESS ）</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">? Pick a CSS pre-processor (PostCSS, Autoprefixer and CSS Modules are supported by default): (Use arrow keys)
+  Sass/SCSS
+❯ Less
+  Stylus
+</code></pre></div><p>选择哪个自动化代码格式化检测（选择 ESLint + Prettier ）</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">? Pick a linter / formatter config: (Use arrow keys)
+  TSLint
+  ESLint with error prevention only
+  ESLint + Airbnb config
+  ESLint + Standard config
+❯ ESLint + Prettier
+</code></pre></div><p>选择什么时候进行代码规则检查</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">? Pick additional lint features: (Press &lt;space&gt; to select, &lt;a&gt; to toggle all, &lt;i&gt; to invert selection)
+❯◉ Lint on save //保存就检查
+ ◯ Lint and fix on commit // fix 和 commit 的时候检查
+</code></pre></div><p>选择单元测试工具 （ 选择 Mocha ）</p>
+<p>Mocha 是流行的 JavaScript 测试框架之一，通过它添加和运行测试，Chai 是断言库</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">? Pick a unit testing solution: (Use arrow keys)
+❯ Mocha + Chai
+  Jest
+</code></pre></div><p>选择配置文件的位置 （ 选择独立文件存放 ）</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">? Where do you prefer placing config for Babel, PostCSS, ESLint, etc.?
+❯ In dedicated config files  //配置存放独立文件
+  In package.json  //配置存放 package.json
+</code></pre></div><p>是否将以上这些将此保存为未来项目的预配置，对于 MAC 保存的配置信息会放在 ~/.vuerc 里面 （否）</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">? Save this as a preset for future projects? (y/N)
+</code></pre></div><p>下一步初始化 CLI 插件</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Vue CLI v3.3.0
+✨  Creating project in /Users/abner/work_space/projects/vue-project/hello-world.
+🗃  Initializing git repository...
+⚙  Installing CLI plugins. This might take a while...
+......
+</code></pre></div><h3 id="启动项目">启动项目</h3>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ cd hello-world
+$ npm run serve
+</code></pre></div><p>浏览器看到的页面如下：</p>
+<p><img src="/img/vue-cli-01.png" alt=""></p>
+<p>代码结构：</p>
+<p><img src="/img/vue-cli-02.png" alt=""></p>
+<h3 id="打包上线">打包上线</h3>
+<p>项目开发完成之后需要打包上线，vue-cli 也提供了打包的命令</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ npm run build
+</code></pre></div><p>打包好的静态资源会保存在 dist 目录，直接部署到静态资源服务器即可。</p>
+<h3 id="单元测试">单元测试</h3>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ npm run test
+</code></pre></div><h3 id="后记">后记</h3>
+<p>这里使用的是 vue-cli 3.0，相比 vue-cli 2.X 有些许不同</p>
+<ul>
+<li>启动命令行有变化</li>
+<li>配置可以保存</li>
+</ul></div>
+                    <div class="post_footer">
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://blog.abnerzhao.com">Designed by Abnerzhao,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+
+    <script src="https://blog.abnerzhao.com/js/jquery-3.5.1.min.js"></script>
+<link href="https://blog.abnerzhao.com/css/fancybox.min.css" rel="stylesheet">
+<script src="https://blog.abnerzhao.com/js/fancybox.min.js"></script>
+<script src="https://blog.abnerzhao.com/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+</body>
+
+</html>
