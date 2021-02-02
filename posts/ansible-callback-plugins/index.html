@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abnerzhao" />
+	
+	
+	
+	<title>Ansible 回调插件简单使用 ｜ 知行
+合一</title>
+	
+    
+    
+    <meta name="description" content="Developing Plugins 插件是增强ansible核心功能的代码片段，我们可以很方便的使用插件，编写插件代码。如果我们想要对ansible的执行结果进行分析，根据返回结果发送邮件，写入日志等都可以通过插件实现。
+插件列表  Action plugins are front ends to modules and can execute actions on the controller before calling the modules themselves.（操作插件，调用模块之前执行操作） Cache plugins are used to keep a cache of ‘facts’ to avoid costly fact-gathering operations.（缓存插件，缓存主机facts变量） Callback plugins enable you to hook into Ansible events for display or logging purposes.（回调插件，对事件进行显示和记录，这个常用） " />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, theme, zozo" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://blog.abnerzhao.com/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">Archive</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://blog.abnerzhao.com/">
+                    <span>知行
+合一</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://www.douban.com/people/66794775/" title="douban" target="_blank"><i class="ri-douban-fill"></i></a>
+                
+                
+                
+                <a href="https://github.com/abnerzhao" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                <a href="https://blog.abnerzhao.com/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/ansible-callback-plugins/'>Ansible 回调插件简单使用</a></h2>
+                        <span class="date">2017.04.11</span>
+                    </div>
+                    <div class="post_content markdown"><h2 id="developing-plugins">Developing Plugins</h2>
+<p>插件是增强ansible核心功能的代码片段，我们可以很方便的使用插件，编写插件代码。如果我们想要对ansible的执行结果进行分析，根据返回结果发送邮件，写入日志等都可以通过插件实现。</p>
+<h3 id="插件列表">插件列表</h3>
+<ul>
+<li><strong>Action plugins</strong> are front ends to modules and can execute actions on the controller before calling the modules themselves.（操作插件，调用模块之前执行操作）</li>
+<li><strong>Cache plugins</strong> are used to keep a cache of ‘facts’ to avoid costly fact-gathering operations.（缓存插件，缓存主机facts变量）</li>
+<li><strong>Callback plugins</strong> enable you to hook into Ansible events for display or logging purposes.（回调插件，对事件进行显示和记录，这个常用）</li>
+</ul>
+<ul>
+<li><strong>Connection plugins</strong> define how to communicate with inventory hosts.（连接插件，定义如何与节点主机通信）</li>
+<li><strong>Filters plugins</strong> allow you to manipulate data inside Ansible plays and/or templates. This is a Jinja2 feature; Ansible ships extra filter plugins.（过滤插件，Jinja2功能）</li>
+<li><strong>Lookup plugins</strong> are used to pull data from an external source. These are implemented using a custom Jinja2 function.（查找插件用于从外部源提取数据）</li>
+<li><strong>Strategy plugins</strong> control the flow of a play and execution logic.（策略插件）</li>
+<li><strong>Shell plugins</strong> deal with low-level commands and formatting for the different shells Ansible can encounter on remote hosts.（shell插件处理低级别命令和格式化）</li>
+<li><strong>Test plugins</strong> allow you to validate data inside Ansible plays and/or templates. This is a Jinja2 feature; Ansible ships extra test plugins.（测试插件）</li>
+<li><strong>Vars plugins</strong> inject additional variable data into Ansible runs that did not come from an inventory, playbook, or the command line.（Vars插件）</li>
+</ul>
+<h2 id="callback-plugins">Callback plugins</h2>
+<p>在日常开发中使用回调插件比较多一点，通过callback插件，可以实现回调功能，里面定义了若干场景，如主机不可达，执行任务失败，执行任务成功等，分别对应不同的方法，这样就可以实现在不同的场景触发不同的操作。</p>
+<h3 id="设置回调功能参数">设置回调功能参数</h3>
+<p>该功能ansible默认是关闭的</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="n">cat</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ansible</span><span class="o">/</span><span class="n">ansible</span><span class="o">.</span><span class="n">cfg</span> 
+<span class="o">...</span>
+<span class="n">bin_ansible_callbacks</span> <span class="o">=</span> <span class="bp">True</span> <span class="c1">#加载功能</span>
+
+<span class="c1"># set plugin path directories here, separate with colons 定义插件位置</span>
+<span class="n">action_plugins</span>     <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">ansible_plugins</span><span class="o">/</span><span class="n">action_plugins</span>
+<span class="n">callback_plugins</span>   <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">ansible_plugins</span><span class="o">/</span><span class="n">callback_plugins</span>
+<span class="n">connection_plugins</span> <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">ansible_plugins</span><span class="o">/</span><span class="n">connection_plugins</span>
+<span class="n">lookup_plugins</span>     <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">ansible_plugins</span><span class="o">/</span><span class="n">lookup_plugins</span>
+<span class="n">vars_plugins</span>       <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">ansible_plugins</span><span class="o">/</span><span class="n">vars_plugins</span>
+<span class="n">filter_plugins</span>     <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">ansible_plugins</span><span class="o">/</span><span class="n">filter_plugins</span>
+<span class="o">...</span>
+</code></pre></div><h3 id="编写回调脚本">编写回调脚本</h3>
+<p>编写回调脚本放到配置文件中定义的目录中，并赋予可执行权限。我们可以将执行结果写入本地文件、数据库或发邮件等等。在日常开发中我们会将结果写入日志或跟踪记录执行的进度和异常。</p>
+<h4 id="写入本地文件">写入本地文件</h4>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># -*- coding:utf-8 -*-</span>
+<span class="c1">#!/usr/bin/env python</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">result_file</span> <span class="o">=</span> <span class="s1">&#39;/tmp/result&#39;</span>
+
+<span class="k">class</span> <span class="nc">CallbackModule</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">runner_on_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_file</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;success</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">host</span><span class="p">))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">)))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">runner_on_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;failed</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">host</span><span class="p">))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">)))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">runner_on_unreachable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">host</span><span class="p">,</span><span class="n">res</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;unreachable</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">host</span><span class="p">))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">)))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div><p>测试</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span>  <span class="o">-</span><span class="n">i</span> <span class="n">hosts</span> <span class="n">test</span><span class="o">.</span><span class="n">yml</span>
+
+<span class="n">PLAY</span> <span class="p">[</span><span class="n">default_group</span><span class="p">]</span> <span class="o">**********************************************************</span>
+
+<span class="n">TASK</span><span class="p">:</span> <span class="p">[</span><span class="n">test</span> <span class="o">|</span> <span class="n">cp</span> <span class="n">test</span> <span class="n">auto</span> <span class="n">install</span> <span class="n">script</span><span class="p">]</span> <span class="o">************************************</span>
+<span class="n">ok</span><span class="p">:</span> <span class="p">[</span><span class="mf">172.31</span><span class="o">.</span><span class="mf">30.178</span><span class="p">]</span>
+
+<span class="n">TASK</span><span class="p">:</span> <span class="p">[</span><span class="n">test</span> <span class="o">|</span> <span class="n">install</span> <span class="n">test</span><span class="p">]</span> <span class="o">***************************************************</span>
+<span class="n">changed</span><span class="p">:</span> <span class="p">[</span><span class="mf">172.31</span><span class="o">.</span><span class="mf">30.178</span><span class="p">]</span>
+
+<span class="n">PLAY</span> <span class="n">RECAP</span> <span class="o">********************************************************************</span>
+<span class="mf">172.31</span><span class="o">.</span><span class="mf">30.178</span>              <span class="p">:</span> <span class="n">ok</span><span class="o">=</span><span class="mi">2</span>    <span class="n">changed</span><span class="o">=</span><span class="mi">1</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="c1">#制造一个unreachable错误</span>
+<span class="err">$</span> <span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span>  <span class="o">-</span><span class="n">i</span> <span class="n">hosts</span>  <span class="n">test</span><span class="o">.</span><span class="n">yml</span>
+
+<span class="n">PLAY</span> <span class="p">[</span><span class="n">default_group</span><span class="p">]</span> <span class="o">**********************************************************</span>
+
+<span class="n">TASK</span><span class="p">:</span> <span class="p">[</span><span class="n">test</span> <span class="o">|</span> <span class="n">cp</span> <span class="n">test</span> <span class="n">auto</span> <span class="n">install</span> <span class="n">script</span><span class="p">]</span> <span class="o">************************************</span>
+<span class="n">fatal</span><span class="p">:</span> <span class="p">[</span><span class="mf">172.31</span><span class="o">.</span><span class="mf">30.178</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="n">SSH</span> <span class="n">encountered</span> <span class="n">an</span> <span class="n">unknown</span> <span class="n">error</span> <span class="n">during</span> <span class="n">the</span> <span class="n">connection</span><span class="o">.</span> <span class="n">We</span> <span class="n">recommend</span> <span class="n">you</span> <span class="n">re</span><span class="o">-</span><span class="n">run</span> <span class="n">the</span> <span class="n">command</span> <span class="n">using</span> <span class="o">-</span><span class="n">vvvv</span><span class="p">,</span> <span class="n">which</span> <span class="n">will</span> <span class="n">enable</span> <span class="n">SSH</span> <span class="n">debugging</span> <span class="n">output</span> <span class="n">to</span> <span class="n">help</span> <span class="n">diagnose</span> <span class="n">the</span> <span class="n">issue</span>
+
+<span class="n">FATAL</span><span class="p">:</span> <span class="nb">all</span> <span class="n">hosts</span> <span class="n">have</span> <span class="n">already</span> <span class="n">failed</span> <span class="o">--</span> <span class="n">aborting</span>
+
+<span class="n">PLAY</span> <span class="n">RECAP</span> <span class="o">********************************************************************</span>
+           <span class="n">to</span> <span class="n">retry</span><span class="p">,</span> <span class="n">use</span><span class="p">:</span> <span class="o">--</span><span class="n">limit</span> <span class="err">@</span><span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">startoftwares</span><span class="o">.</span><span class="n">retry</span>
+
+<span class="mf">172.31</span><span class="o">.</span><span class="mf">30.178</span>              <span class="p">:</span> <span class="n">ok</span><span class="o">=</span><span class="mi">0</span>    <span class="n">changed</span><span class="o">=</span><span class="mi">0</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">1</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="c1">#查看结果</span>
+<span class="err">$</span> <span class="n">cat</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">result</span>
+<span class="n">success</span>
+<span class="mf">172.31</span><span class="o">.</span><span class="mf">30.178</span><span class="p">{</span>
+    <span class="s2">&#34;changed&#34;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+    <span class="s2">&#34;dest&#34;</span><span class="p">:</span> <span class="s2">&#34;/tmp/test.sh&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;gid&#34;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">&#34;group&#34;</span><span class="p">:</span> <span class="s2">&#34;ubuntu&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;invocation&#34;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&#34;module_args&#34;</span><span class="p">:</span> <span class="s2">&#34;src=test.sh dest=/tmp/test.sh owner=ubuntu group=ubuntu mode=0755&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;module_name&#34;</span><span class="p">:</span> <span class="s2">&#34;copy&#34;</span>
+    <span class="p">},</span>
+    <span class="s2">&#34;md5sum&#34;</span><span class="p">:</span> <span class="s2">&#34;da1bd2e811a9909b96b09c3988deaec6&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;mode&#34;</span><span class="p">:</span> <span class="s2">&#34;0755&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;owner&#34;</span><span class="p">:</span> <span class="s2">&#34;ubuntu&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;/tmp/test.sh&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;size&#34;</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
+    <span class="s2">&#34;state&#34;</span><span class="p">:</span> <span class="s2">&#34;file&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;uid&#34;</span><span class="p">:</span> <span class="mi">1000</span>
+<span class="p">}</span>
+<span class="n">success</span>
+<span class="mf">172.31</span><span class="o">.</span><span class="mf">30.178</span><span class="p">{</span>
+    <span class="s2">&#34;changed&#34;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+    <span class="s2">&#34;cmd&#34;</span><span class="p">:</span> <span class="s2">&#34;bash /tmp/test.sh&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;delta&#34;</span><span class="p">:</span> <span class="s2">&#34;0:00:03.004104&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;end&#34;</span><span class="p">:</span> <span class="s2">&#34;2017-04-11 10:48:20.429600&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;invocation&#34;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&#34;module_args&#34;</span><span class="p">:</span> <span class="s2">&#34;bash /tmp/test.sh&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;module_name&#34;</span><span class="p">:</span> <span class="s2">&#34;shell&#34;</span>
+    <span class="p">},</span>
+    <span class="s2">&#34;rc&#34;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&#34;start&#34;</span><span class="p">:</span> <span class="s2">&#34;2017-04-11 10:48:17.425496&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;stderr&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+    <span class="s2">&#34;stdout&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span>
+<span class="p">}</span>
+<span class="n">unreachable</span>
+<span class="mf">172.31</span><span class="o">.</span><span class="mf">30.178</span><span class="s2">&#34;SSH encountered an unknown error during the connection. We recommend you re-run the command using -vvvv, which will enable SSH debugging output to help diagnose the issue&#34;</span>
+</code></pre></div><h4 id="发邮件">发邮件</h4>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># -*- coding:utf-8 -*-</span>
+<span class="c1">#!/usr/bin/env python</span>
+
+<span class="kn">import</span> <span class="nn">smtplib</span>
+<span class="kn">from</span> <span class="nn">email.mime.text</span> <span class="kn">import</span> <span class="n">MIMEText</span>
+
+
+
+<span class="n">mail_host</span><span class="o">=</span><span class="s2">&#34;smtp.xxx.com&#34;</span>
+<span class="n">mail_user</span><span class="o">=</span><span class="s2">&#34;xxxxx@xxx.com&#34;</span>
+<span class="n">mail_pass</span><span class="o">=</span><span class="s2">&#34;xxxxxxx&#34;</span>
+<span class="n">user_to</span> <span class="o">=</span> <span class="s2">&#34;xxxxx@xxx.com&#34;</span>
+
+
+<span class="k">def</span> <span class="nf">send_mail</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">MIMEText</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="s1">&#39;plain&#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;From&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mail_user</span>
+    <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;To&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_to</span>
+    <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;Subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Ansible error mail&#39;</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP</span><span class="p">(</span><span class="n">mail_host</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">mail_user</span><span class="p">,</span> <span class="n">mail_pass</span><span class="p">)</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">sendmail</span><span class="p">(</span><span class="n">mail_user</span><span class="p">,</span> <span class="n">user_to</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">as_string</span><span class="p">())</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">CallbackModule</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">runner_on_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">runner_on_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">runner_on_unreachable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">host</span><span class="p">,</span><span class="n">res</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="nb">basestring</span><span class="p">):</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="s1">&#39;An error occured for host &#39;</span> <span class="o">+</span> <span class="n">host</span> <span class="o">+</span> <span class="s1">&#39; with the following message:</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">res</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="s1">&#39;An error occured for host&#39;</span> <span class="o">+</span> <span class="n">host</span> <span class="o">+</span> <span class="s1">&#39; with the following message:</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="n">send_mail</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+</code></pre></div><p>测试</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span>  <span class="o">-</span><span class="n">i</span> <span class="n">hosts</span>  <span class="n">test</span><span class="o">.</span><span class="n">yml</span>
+
+<span class="n">PLAY</span> <span class="p">[</span><span class="n">default_group</span><span class="p">]</span> <span class="o">**********************************************************</span>
+
+<span class="n">TASK</span><span class="p">:</span> <span class="p">[</span><span class="n">test</span> <span class="o">|</span> <span class="n">cp</span> <span class="n">test</span> <span class="n">auto</span> <span class="n">install</span> <span class="n">script</span><span class="p">]</span> <span class="o">************************************</span>
+<span class="n">fatal</span><span class="p">:</span> <span class="p">[</span><span class="mf">172.31</span><span class="o">.</span><span class="mf">30.178</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="n">SSH</span> <span class="n">encountered</span> <span class="n">an</span> <span class="n">unknown</span> <span class="n">error</span> <span class="n">during</span> <span class="n">the</span> <span class="n">connection</span><span class="o">.</span> <span class="n">We</span> <span class="n">recommend</span> <span class="n">you</span> <span class="n">re</span><span class="o">-</span><span class="n">run</span> <span class="n">the</span> <span class="n">command</span> <span class="n">using</span> <span class="o">-</span><span class="n">vvvv</span><span class="p">,</span> <span class="n">which</span> <span class="n">will</span> <span class="n">enable</span> <span class="n">SSH</span> <span class="n">debugging</span> <span class="n">output</span> <span class="n">to</span> <span class="n">help</span> <span class="n">diagnose</span> <span class="n">the</span> <span class="n">issue</span>
+
+<span class="n">FATAL</span><span class="p">:</span> <span class="nb">all</span> <span class="n">hosts</span> <span class="n">have</span> <span class="n">already</span> <span class="n">failed</span> <span class="o">--</span> <span class="n">aborting</span>
+
+<span class="n">PLAY</span> <span class="n">RECAP</span> <span class="o">********************************************************************</span>
+           <span class="n">to</span> <span class="n">retry</span><span class="p">,</span> <span class="n">use</span><span class="p">:</span> <span class="o">--</span><span class="n">limit</span> <span class="err">@</span><span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">startoftwares</span><span class="o">.</span><span class="n">retry</span>
+
+<span class="mf">172.31</span><span class="o">.</span><span class="mf">30.178</span>              <span class="p">:</span> <span class="n">ok</span><span class="o">=</span><span class="mi">0</span>    <span class="n">changed</span><span class="o">=</span><span class="mi">0</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">1</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+</code></pre></div><p>查收邮件</p>
+<p><img src="/img/B028FB3F-50E6-4B04-8969-BDCFD20ECAEB.png" alt=""></p>
+<p>以上脚本都写的比较简单，建议参考:<a href="https://github.com/ansible/ansible/blob/devel/lib/ansible/plugins">官方插件代码样例</a></p>
+<h2 id="参考">参考</h2>
+<p><a href="http://docs.ansible.com/ansible/dev_guide/developing_plugins.html">官方文档</a>
+<a href="http://ansible-tran.readthedocs.io/en/latest/docs/intro_configuration.html#bin-ansible-callbacks">中文文档配置文件参数详解</a>
+<a href="http://rfyiamcool.blog.51cto.com/1030776/1440624">ansible调用callbacks插件实现结果nosql输出回调</a></p></div>
+                    <div class="post_footer">
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://blog.abnerzhao.com">Designed by Abnerzhao,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+
+    <script src="https://blog.abnerzhao.com/js/jquery-3.5.1.min.js"></script>
+<link href="https://blog.abnerzhao.com/css/fancybox.min.css" rel="stylesheet">
+<script src="https://blog.abnerzhao.com/js/fancybox.min.js"></script>
+<script src="https://blog.abnerzhao.com/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+</body>
+
+</html>
