@@ -142,5 +142,14 @@
       <description>Ops/Dev 学艺不精，浅尝辄止 邮箱：opsabnerzhao@163.com</description>
     </item>
     
+    <item>
+      <title>运维必备之Linux命令概览</title>
+      <link>https://blog.abnerzhao.com/posts/command/</link>
+      <pubDate>Sun, 01 Jan 2017 20:48:46 +0000</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/command/</guid>
+      <description>监控 测试 优化 参考 Linux Performance</description>
+    </item>
+    
   </channel>
 </rss>
