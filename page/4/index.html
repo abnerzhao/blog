@@ -96,125 +96,26 @@
 
 <div class="post animated fadeInDown">
     <div class="post_title">
-        <h2><a href='/posts/celery-background/'>Celery 后台执行方法</a></h2>
+        <h2><a href='/posts/low-level-discovery/'>Zabbix Low-level discovery</a></h2>
     </div>
     
     <div class="list">
         <div class="post_content markdown">
-            <p><h3 id="init-script">init-script</h3>
-<p>1.先下载两个脚本文件 <a href="https://github.com/celery/celery/tree/3.1/extra/generic-init.d/">generic-init.d</a>，我的项目里有定时任务，所以两个都需要用到</p>
-<p>2.创建配置文件</p>
-<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ cat /etc/default/celeryd
-# Names of nodes to start
-#   most people will only start one node:
-
-CELERYD_NODES=&#34;worker1&#34; # work 任务节点
-
-#   but you can also start multiple and configure settings
-#   for each in CELERYD_OPTS
-#CELERYD_NODES=&#34;worker1 worker2 worker3&#34;
-#   alternatively, you can specify the number of nodes to start:
-#CELERYD_NODES=10
-
-# Absolute or relative path to the &#39;celery&#39; command:
-
-CELERY_BIN=&#34;/home/prod/softwares/python/bin/celery&#34; # celery 命令的绝对路径
-
-# App instance to use
-# comment out this line if you don&#39;t use an app
-
-CELERY_APP=&#34;wfstar&#34; # 应用实例
-
-# or fully qualified:
-#CELERY_APP=&#34;proj.tasks:app&#34;
-
-# Where to chdir at start.
-CELERYD_CHDIR=&#34;/home/prod/deploys/wfstar&#34; # 项目目录
-
-# Extra command-line arguments to the worker
-
-CELERYD_OPTS=&#34;--time-limit=300 --concurrency=8&#34; # 命令行参数，更多请参考 man 手册 
-
-# Configure node-specific settings by appending node name to arguments:
-#CELERYD_OPTS=&#34;--time-limit=300 -c 8 -c:worker2 4 -c:worker3 2 -Ofair:worker1&#34;
-# Set logging level to DEBUG
-#CELERYD_LOG_LEVEL=&#34;DEBUG&#34;
-
-# %n will be replaced with the first part of the nodename
-
-CELERYD_LOG_FILE=&#34;/var/log/celery/%n%I.log&#34;
-CELERYD_PID_FILE=&#34;/var/run/celery/%n.pid&#34;
-
-# Workers should run as an unprivileged user.
-#   You need to create this user manually (or you can choose
-#   a user/group combination that already exists (e.g., nobody).
-
-CELERYD_USER=&#34;prod&#34;
-CELERYD_GROUP=&#34;prod&#34;
-
-# If enabled pid and log directories will be created if missing,
-# and owned by the userid/group configured.
-CELERY_CREATE_DIRS=1  # 自动创建日志和 pid 文件
-</code></pre></div>......</p>
-        </div>
-    </div>
-    
-    <div class="post_footer">
-        <div class="meta">
-            <div class="info">
-                <span class="field">
-                    <i class="ri-map-pin-time-line"></i>
-                    <span class="date">2018.03.25</span>
-                </span>
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="post animated fadeInDown">
-    <div class="post_title">
-        <h2><a href='/posts/django-celery-notes/'>Django Celery 定时任务笔记</a></h2>
-    </div>
-    
-    <div class="list">
-        <div class="post_content markdown">
-            <p><h3 id="环境准备">环境准备</h3>
+            <p><blockquote>
+<p>Low-level discovery provides a way to automatically create items, triggers, and graphs for different entities on a computer. For instance, Zabbix can automatically start monitoring file systems or network interfaces on your machine, without the need to create items for each file system or network interface manually.</p>
+</blockquote>
+<blockquote>
+<p>In Zabbix, four types of item discovery are supported out of the box:</p>
+</blockquote>
 <ul>
-<li>Python 2.7</li>
-<li>Djang 1.10</li>
-<li>celery 4.1.0</li>
-<li>RabbitMQ 3.2.4</li>
+<li>discovery of file systems;</li>
+<li>discovery of network interfaces;</li>
+<li>discovery of CPUs and CPU cores;</li>
+<li>discovery of SNMP OIDs.</li>
 </ul>
-<h3 id="开始">开始</h3>
-<h4 id="创建虚拟环境构建-django-项目">创建虚拟环境，构建 Django 项目</h4>
-<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ virtualenv django-exp
-$ source django-exp/bin/activate
-$ pip intall django==1.10
-$ django-admin startproject myproject
-$ cd myproject/
-$ django-admin startapp myapp
-$ tree
-.
-├── manage.py
-├── myapp
-│   ├── admin.py
-│   ├── apps.py
-│   ├── __init__.py
-│   ├── migrations
-│   │   └── __init__.py
-│   ├── models.py
-│   ├── tests.py
-│   └── views.py
-└── myproject
-    ├── __init__.py
-    ├── settings.py
-    ├── urls.py
-    └── wsgi.py
-$ pip install celery
-$ pip install pysqlite
-$ sudo apt-get install rabbitmq-server
-</code></pre></div>......</p>
+<blockquote>
+<p>A user can define their own types of discovery, provided they follow a particular JSON protocol.</p>
+</blockquote>......</p>
         </div>
     </div>
     
@@ -223,7 +124,7 @@ $ sudo apt-get install rabbitmq-server
             <div class="info">
                 <span class="field">
                     <i class="ri-map-pin-time-line"></i>
-                    <span class="date">2018.02.25</span>
+                    <span class="date">2017.01.21</span>
                 </span>
                 
             </div>
@@ -233,18 +134,12 @@ $ sudo apt-get install rabbitmq-server
 
 <div class="post animated fadeInDown">
     <div class="post_title">
-        <h2><a href='/posts/quickstart-wiki/'>使用Sphinx &#43; GitHub &#43; Read the Docs搭建wiki</a></h2>
+        <h2><a href='/posts/command/'>运维必备之Linux命令概览</a></h2>
     </div>
     
     <div class="list">
         <div class="post_content markdown">
-            <p><p>Sphinx 是一个基于 ReStructuredText 的文档生成工具，有很多开源工程都采用sphinx作为文档生成系统，最有名的就是 python 官方文档。</p>
-<p>Read the Docs是一个在线文档托管服务，可以从各种版本控制系统中导入文档。支持 webhooks，当你提交代码时，文档将被自动构建。</p>
-<p>Sphinx + GitHub + ReadtheDocs 作为一个文档写作工具， 用 Sphinx 生成文档，GitHub 托管文档，再导入到 ReadtheDocs。我们可以使用这个工具写文档、记笔记等。</p>
-<h3 id="搭建过程">搭建过程</h3>
-<h4 id="安装-sphinx">安装 Sphinx</h4>
-<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo pip install sphinx
-</code></pre></div>......</p>
+            <p>监控 测试 优化 参考 Linux Performance......</p>
         </div>
     </div>
     
@@ -253,38 +148,7 @@ $ sudo apt-get install rabbitmq-server
             <div class="info">
                 <span class="field">
                     <i class="ri-map-pin-time-line"></i>
-                    <span class="date">2017.10.14</span>
-                </span>
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="post animated fadeInDown">
-    <div class="post_title">
-        <h2><a href='/posts/ansible-callback-plugins/'>Ansible 回调插件简单使用</a></h2>
-    </div>
-    
-    <div class="list">
-        <div class="post_content markdown">
-            <p><h2 id="developing-plugins">Developing Plugins</h2>
-<p>插件是增强ansible核心功能的代码片段，我们可以很方便的使用插件，编写插件代码。如果我们想要对ansible的执行结果进行分析，根据返回结果发送邮件，写入日志等都可以通过插件实现。</p>
-<h3 id="插件列表">插件列表</h3>
-<ul>
-<li><strong>Action plugins</strong> are front ends to modules and can execute actions on the controller before calling the modules themselves.（操作插件，调用模块之前执行操作）</li>
-<li><strong>Cache plugins</strong> are used to keep a cache of ‘facts’ to avoid costly fact-gathering operations.（缓存插件，缓存主机facts变量）</li>
-<li><strong>Callback plugins</strong> enable you to hook into Ansible events for display or logging purposes.（回调插件，对事件进行显示和记录，这个常用）</li>
-</ul>......</p>
-        </div>
-    </div>
-    
-    <div class="post_footer">
-        <div class="meta">
-            <div class="info">
-                <span class="field">
-                    <i class="ri-map-pin-time-line"></i>
-                    <span class="date">2017.04.11</span>
+                    <span class="date">2017.01.01</span>
                 </span>
                 
             </div>
@@ -300,10 +164,6 @@ $ sudo apt-get install rabbitmq-server
         
     </a>
     
-    
-    <a href="/page/5/" class="next">
-        
-    </a>
     
     
 </div>

@@ -134,12 +134,149 @@
     </item>
     
     <item>
+      <title>使用 Vue CLI 快速创建 Vue 项目</title>
+      <link>https://blog.abnerzhao.com/posts/vue-cli-create-project/</link>
+      <pubDate>Sat, 19 Jan 2019 20:49:05 +0000</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/vue-cli-create-project/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://cli.vuejs.org/zh/guide/&#34;&gt;Vue CLI&lt;/a&gt; 是一个基于 Vue.js 进行快速开发的完整系统，提供：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;通过 @vue/cli 搭建交互式的项目脚手架&lt;/li&gt;
+&lt;li&gt;通过 @vue/cli + @vue/cli-service-global 快速开始零配置原型开发&lt;/li&gt;
+&lt;li&gt;一个运行时依赖 (@vue/cli-service)，该依赖
+&lt;ul&gt;
+&lt;li&gt;可升级&lt;/li&gt;
+&lt;li&gt;基于 webpack 构建，并带有合理的默认配置&lt;/li&gt;
+&lt;li&gt;可以通过项目内的配置文件进行配置&lt;/li&gt;
+&lt;li&gt;可以通过插件进行扩展&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;一个丰富的官方插件集合，集成了前端生态中最好的工具&lt;/li&gt;
+&lt;li&gt;一套完全图形化的创建和管理 Vue.js 项目的用户界面&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>摄影知识快速入门</title>
+      <link>https://blog.abnerzhao.com/posts/%E6%91%84%E5%BD%B1%E7%9F%A5%E8%AF%86%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Sun, 23 Dec 2018 21:40:17 +0000</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/%E6%91%84%E5%BD%B1%E7%9F%A5%E8%AF%86%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/</guid>
+      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;三流的摄影师比器材，二流的摄影师比技术，一流的摄影师比思想。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;照片从来不能解决问题，它总是在不断的提出问题：为什么会这样？如果你能不断的提出问题，你就会不断的按下快门，把你的思想和疑问传达出来。如果观众看过你的照片后也良久驻足，思考着你的思考，疑问着你的疑问，那您就快接近摄影的最高境界了&amp;rdquo;        《论摄影》&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;摄影名词&#34;&gt;摄影名词&lt;/h2&gt;
+&lt;h3 id=&#34;iso&#34;&gt;ISO&lt;/h3&gt;
+&lt;p&gt;ISO（感光度）是CCD（Charge Coupled Device，电子感光芯片）或是胶卷对光线的敏感程度。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>QuerySet API 学习笔记</title>
+      <link>https://blog.abnerzhao.com/posts/queryset-api-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Sun, 19 Aug 2018 12:51:03 +0000</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/queryset-api-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
+      <description>&lt;h3 id=&#34;querysets-evaluated&#34;&gt;QuerySets evaluated&lt;/h3&gt;
+&lt;p&gt;可以创建、过滤、切片和传递查询集而不用真实操作数据库。在你对查询集做求值之前，不会发生任何实际的数据库操作。&lt;/p&gt;
+&lt;p&gt;对于查询集我们使用以下方法进行求值：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Iteration&lt;/li&gt;
+&lt;li&gt;Slicing&lt;/li&gt;
+&lt;li&gt;Pickling/Caching&lt;/li&gt;
+&lt;li&gt;repr()&lt;/li&gt;
+&lt;li&gt;len()&lt;/li&gt;
+&lt;li&gt;list()&lt;/li&gt;
+&lt;li&gt;bool()&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;queryset-api&#34;&gt;QuerySet API&lt;/h3&gt;
+&lt;h4 id=&#34;返回新的查询集方法&#34;&gt;返回新的查询集方法&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;filter&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;返回一个新的 QuerySet 包含给定参数的查询匹配对象，更复杂的查询可以使用 Q 对象。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;exclude&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;返回一个新的 QuerySet，它包含不满足给定的查找参数的对象，更复杂的查询同样可以使用 Q 对象。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>豆瓣房源爬虫小记</title>
+      <link>https://blog.abnerzhao.com/posts/douban-spider/</link>
+      <pubDate>Thu, 05 Apr 2018 14:03:55 +0000</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/douban-spider/</guid>
+      <description>&lt;p&gt;最近又要开始找房，来上海三年不到已经是第三次搬家，真是居大不易。现在住的房子是在豆瓣小组上找的，豆瓣上个人房源较多，但是豆瓣小组没有对房源信息进行分类，找起来比较费时，索性写了个简单的爬虫，根据关键字来找房。网上也有一些现成的代码实现，想着还是自己实践一下。&lt;/p&gt;
+&lt;p&gt;Python 新手上路&amp;hellip;&lt;/p&gt;
+&lt;h3 id=&#34;获取豆瓣房源小组链接&#34;&gt;获取豆瓣房源小组链接&lt;/h3&gt;
+&lt;p&gt;先搜索一下上海的租房小组&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/270B4257-2781-4F04-A000001F-A539B7F1791D.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;找几个人数较多和活跃度高的小组，进入小组讨论页面，观察 URL 的规律。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>About Me</title>
       <link>https://blog.abnerzhao.com/about/</link>
       <pubDate>Mon, 01 Jan 2018 20:48:46 +0000</pubDate>
       
       <guid>https://blog.abnerzhao.com/about/</guid>
       <description>Ops/Dev 学艺不精，浅尝辄止 邮箱：opsabnerzhao@163.com</description>
+    </item>
+    
+    <item>
+      <title>使用Sphinx &#43; GitHub &#43; Read the Docs搭建wiki</title>
+      <link>https://blog.abnerzhao.com/posts/quickstart-wiki/</link>
+      <pubDate>Sat, 14 Oct 2017 15:54:01 +0000</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/quickstart-wiki/</guid>
+      <description>&lt;p&gt;Sphinx 是一个基于 ReStructuredText 的文档生成工具，有很多开源工程都采用sphinx作为文档生成系统，最有名的就是 python 官方文档。&lt;/p&gt;
+&lt;p&gt;Read the Docs是一个在线文档托管服务，可以从各种版本控制系统中导入文档。支持 webhooks，当你提交代码时，文档将被自动构建。&lt;/p&gt;
+&lt;p&gt;Sphinx + GitHub + ReadtheDocs 作为一个文档写作工具， 用 Sphinx 生成文档，GitHub 托管文档，再导入到 ReadtheDocs。我们可以使用这个工具写文档、记笔记等。&lt;/p&gt;
+&lt;h3 id=&#34;搭建过程&#34;&gt;搭建过程&lt;/h3&gt;
+&lt;h4 id=&#34;安装-sphinx&#34;&gt;安装 Sphinx&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;$ sudo pip install sphinx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>Ansible 回调插件简单使用</title>
+      <link>https://blog.abnerzhao.com/posts/ansible-callback-plugins/</link>
+      <pubDate>Tue, 11 Apr 2017 20:20:44 +0000</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/ansible-callback-plugins/</guid>
+      <description>&lt;h2 id=&#34;developing-plugins&#34;&gt;Developing Plugins&lt;/h2&gt;
+&lt;p&gt;插件是增强ansible核心功能的代码片段，我们可以很方便的使用插件，编写插件代码。如果我们想要对ansible的执行结果进行分析，根据返回结果发送邮件，写入日志等都可以通过插件实现。&lt;/p&gt;
+&lt;h3 id=&#34;插件列表&#34;&gt;插件列表&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Action plugins&lt;/strong&gt; are front ends to modules and can execute actions on the controller before calling the modules themselves.（操作插件，调用模块之前执行操作）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cache plugins&lt;/strong&gt; are used to keep a cache of ‘facts’ to avoid costly fact-gathering operations.（缓存插件，缓存主机facts变量）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Callback plugins&lt;/strong&gt; enable you to hook into Ansible events for display or logging purposes.（回调插件，对事件进行显示和记录，这个常用）&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Zabbix Low-level discovery</title>
+      <link>https://blog.abnerzhao.com/posts/low-level-discovery/</link>
+      <pubDate>Sat, 21 Jan 2017 22:13:32 +0000</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/low-level-discovery/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;Low-level discovery provides a way to automatically create items, triggers, and graphs for different entities on a computer. For instance, Zabbix can automatically start monitoring file systems or network interfaces on your machine, without the need to create items for each file system or network interface manually.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;In Zabbix, four types of item discovery are supported out of the box:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;discovery of file systems;&lt;/li&gt;
+&lt;li&gt;discovery of network interfaces;&lt;/li&gt;
+&lt;li&gt;discovery of CPUs and CPU cores;&lt;/li&gt;
+&lt;li&gt;discovery of SNMP OIDs.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A user can define their own types of discovery, provided they follow a particular JSON protocol.&lt;/p&gt;
+&lt;/blockquote&gt;</description>
     </item>
     
     <item>
