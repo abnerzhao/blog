@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abnerzhao" />
+	
+	
+	
+	<title>豆瓣房源爬虫小记 ｜ 知行
+合一</title>
+	
+    
+    
+    <meta name="description" content="最近又要开始找房，来上海三年不到已经是第三次搬家，真是居大不易。现在住的房子是在豆瓣小组上找的，豆瓣上个人房源较多，但是豆瓣小组没有对房源信息进行分类，找起来比较费时，索性写了个简单的爬虫，根据关键字来找房。网上也有一些现成的代码实现，想着还是自己实践一下。
+Python 新手上路&amp;hellip;
+获取豆瓣房源小组链接 先搜索一下上海的租房小组
+找几个人数较多和活跃度高的小组，进入小组讨论页面，观察 URL 的规律。
+" />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, theme, zozo" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://blog.abnerzhao.com/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">Archive</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://blog.abnerzhao.com/">
+                    <span>知行
+合一</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://www.douban.com/people/66794775/" title="douban" target="_blank"><i class="ri-douban-fill"></i></a>
+                
+                
+                
+                <a href="https://github.com/abnerzhao" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                <a href="https://blog.abnerzhao.com/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/douban-spider/'>豆瓣房源爬虫小记</a></h2>
+                        <span class="date">2018.04.05</span>
+                    </div>
+                    <div class="post_content markdown"><p>最近又要开始找房，来上海三年不到已经是第三次搬家，真是居大不易。现在住的房子是在豆瓣小组上找的，豆瓣上个人房源较多，但是豆瓣小组没有对房源信息进行分类，找起来比较费时，索性写了个简单的爬虫，根据关键字来找房。网上也有一些现成的代码实现，想着还是自己实践一下。</p>
+<p>Python 新手上路&hellip;</p>
+<h3 id="获取豆瓣房源小组链接">获取豆瓣房源小组链接</h3>
+<p>先搜索一下上海的租房小组</p>
+<p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/270B4257-2781-4F04-A000001F-A539B7F1791D.png" alt=""></p>
+<p>找几个人数较多和活跃度高的小组，进入小组讨论页面，观察 URL 的规律。</p>
+<p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/1D40CBE0-36C5-45E4-9B42-0E7823ADF269.png" alt="">
+<img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/7BD30596-ABF6-428C-BF7B-D232B1C6605D.png" alt=""></p>
+<p>由此可知我们可以通过 <code>https://www.douban.com/group/&lt;组名&gt;/disscussion</code> 来获取不同组的房源帖子信息，我选取了五个小组进行爬取。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">In [1]: import os
+In [2]: group_list = [&#39;shanghaizufang&#39;, &#39;homeatshanghai&#39;, &#39;383972&#39;, &#39;shzf&#39;, &#39;251101&#39;]
+In [3]: index_url = [os.path.join(&#39;https://www.douban.com/group&#39;, i, &#39;discussion&#39;) for i in group_list]
+In [4]: index_url
+Out[4]:
+[&#39;https://www.douban.com/group/shanghaizufang/discussion&#39;,
+ &#39;https://www.douban.com/group/homeatshanghai/discussion&#39;,
+ &#39;https://www.douban.com/group/383972/discussion&#39;,
+ &#39;https://www.douban.com/group/shzf/discussion&#39;,
+ &#39;https://www.douban.com/group/251101/discussion&#39;]
+</code></pre></div><h3 id="资源定位">资源定位</h3>
+<p>通过查看页面元素信息，找到每个帖子标题所对应的网页代码。我们可以发现每个房源标题对应的是一个 <code>class</code> 属性为 <code>title</code> 的 <code>td</code> 标记。</p>
+<p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/59E824C2-AC6A-45F4-86D4-2582065E92A5.png" alt=""></p>
+<p>使用 <code>BeautifulSoup</code> 尝试获取一下小组讨论中帖子标题网页代码</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">In [1]: import requests
+In [2]: from bs4 import BeautifulSoup
+In [3]: url = &#39;https://www.douban.com/group/shanghaizufang/discussion&#39;
+In [4]: headers = {&#39;User-Agent&#39;: &#39;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 &#39;
+   ...:                                  &#39;(KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36&#39;}
+In [5]: res = requests.get(url, headers=headers)
+In [6]: soup = BeautifulSoup(res.text, &#39;html.parser&#39;)
+In [7]: title_list = soup.find_all(&#39;td&#39;, class_=&#39;title&#39;)
+In [8]: for tl in title_list:
+    ...:     print(tl)
+    ...:
+&lt;td class=&#34;title&#34;&gt;
+&lt;a class=&#34;&#34; href=&#34;https://www.douban.com/group/topic/114471599/&#34; title=&#34;黄浦区临地铁4号13号线单间出租。2300！无中介，可月租！&#34;&gt;
+                       黄浦区临地铁4号13号线单间出租。2300！无中介，可...
+                    &lt;/a&gt;
+&lt;/td&gt;
+&lt;td class=&#34;title&#34;&gt;
+&lt;a class=&#34;&#34; href=&#34;https://www.douban.com/group/topic/113810667/&#34; title=&#34;——有阳台·房间空间大·低价出租·2260元·正南·电梯房·步行6分钟到7号线·《盒马生鲜·DFC影院·大华锦绣国际》隔壁·锦绣华城2街区&#34;&gt;
+                       ——有阳台·房间空间大·低价出租·2260元·正南...
+                    &lt;/a&gt;
+&lt;/td&gt;
+&lt;td class=&#34;title&#34;&gt;
+&lt;a class=&#34;&#34; href=&#34;https://www.douban.com/group/topic/111282163/&#34; title=&#34;7号线杨高南路___北艾路1200弄超大1室_正南_大飘窗_2790元&#34;&gt;
+                       7号线杨高南路___北艾路1200弄超大1室_正南_大飘窗...
+                    &lt;/a&gt;
+&lt;/td&gt;
+...
+</code></pre></div><h3 id="关键字过滤">关键字过滤</h3>
+<p>通过 <code>BeautifulSoup</code> 我们已经成功获取到帖子标题相关网页代码信息，接下来就是匹配我们的关键字并把对应标题的 url 保存下来，这样我们就不用一页页去找房源信息。</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">In [9]: for tl in title_list:
+    ...:     print(tl.a[&#39;title&#39;], tl.a[&#39;href&#39;])
+    ...:
+紧靠漕河泾地铁12号线虹梅路站古美小区精装一室户随时看房 https://www.douban.com/group/topic/114690388/
+【性价比最高】【2/4/6/9】世纪大道地铁站口200米内，2018.4.5起三天内【出租】有效 https://www.douban.com/group/topic/114031302/
+陆家嘴，2号线东昌路站，精装南北两房一厅，5400元可谈，乳山四村 https://www.douban.com/group/topic/114838496/
+7号线30秒___高科西路2111弄（独立阳台_洗漱）2890 https://www.douban.com/group/topic/111749919/
+1号线外环路站______主卧朝南、近地铁 https://www.douban.com/group/topic/115006334/
+7号线__成山路2388弄(高档小区）__环境美_2090元 https://www.douban.com/group/topic/111343989/
+1500元就能租到社区一居室/复式低价火热出租ING https://www.douban.com/group/topic/114031502/
+1号线❤️莲花路站❤️朝南+落地窗（4分钟到地铁）___2200¥ https://www.douban.com/group/topic/115010633/
+工作调动2469号线德平路地铁站两房！价格可刀 https://www.douban.com/group/topic/114668639/
+2号线 淞虹路站 通协小区 朝南主卧带飘窗 随时入住 精装全配 可做饭 凌空首选随时入住先到先得 2700/月 https://www.douban.com/group/topic/114638949/
+3号线铁力路站，实体墙一室带独立卫生间，可以做饭，出租1900元。 https://www.douban.com/group/topic/115000070/
+1号线莲花路站_____步行2分钟（西班牙名园小区） https://www.douban.com/group/topic/115009200/
+—落地大阳台·2780元·豪装—海归首选房—敞亮的大房子《陆家嘴·锦绣里》高档小区—电梯房 https://www.douban.com/group/topic/113808306/
+静安高荣小区朝南带阳台主卧出租&lt;限女生&gt;3100/月，直接和房东签合同 https://www.douban.com/group/topic/114799989/
+1号线❤️外环路站【主卧独卫】地铁口__ 上海阳城小区 https://www.douban.com/group/topic/115008659/
+五角场附近主卧出租，市光路70弄小区，限女生 https://www.douban.com/group/topic/113345605/
+7号线_北艾路1200弄__正南温馨_干净安静：1690元（租女生） https://www.douban.com/group/topic/112014980/
+7号线锦绣路站【山姆会员店】旁边  朝南精装大1室 带飘窗__2490元 https://www.douban.com/group/topic/111243092/
+一三四八号线上海火车站附近 （2400）限一个女生 （实图个图）有厨房 朝南主卧 https://www.douban.com/group/topic/114856540/
+一室一厅一厨一卫整租！7号线，上海大学地铁站！6分钟！ https://www.douban.com/group/topic/114814137/
+【无中介】2号线 中山公园和8号线翔殷路（靠近10号线五角广场）及9号线松江大学城站一室户 https://www.douban.com/group/topic/114031377/
+七号线南陈路，整租两房两厅，便宜出租！ https://www.douban.com/group/topic/113826619/
+7号线__北艾路1200弄__超大一室，非常温馨：2490元 https://www.douban.com/group/topic/112276783/
+2/4/6/9号线世纪大道站，精装双南两房一厅，6600元可谈，梅园五街坊 https://www.douban.com/group/topic/114883174/
+这应该是徐家汇最好的公寓 https://www.douban.com/group/topic/113839494/
+
+In [10]: keyword = &#39;1号线&#39;
+In [11]: for tl in title_list:
+    ...:     if keyword in tl.a[&#39;title&#39;]:
+    ...:         print(tl.a[&#39;title&#39;], tl.a[&#39;href&#39;])
+    ...:
+1号线外环路站______主卧朝南、近地铁 https://www.douban.com/group/topic/115006334/
+1号线❤️莲花路站❤️朝南+落地窗（4分钟到地铁）___2200¥ https://www.douban.com/group/topic/115010633/
+1号线莲花路站_____步行2分钟（西班牙名园小区） https://www.douban.com/group/topic/115009200/
+1号线❤️外环路站【主卧独卫】地铁口__ 上海阳城小区 https://www.douban.com/group/topic/115008659/
+</code></pre></div><h3 id="页码控制">页码控制</h3>
+<p>以上海租房小组为例，之前测试爬取的路径是 <code>https://www.douban.com/group/shanghaizufang/discussion</code> 默认只会爬取第一页的 25 条信息，那么我们想爬取更多的信息，如何控制爬取的页码呢？</p>
+<p><img src="http://7vzmp5.com1.z0.glb.clouddn.com/40E19CBD-E356-4CFA-B635-A430631C84D0.png" alt=""></p>
+<p>通过　<code>class</code> 属性为 <code>next</code> 的 <code>span</code>　标记可以获取到下一页的链接地址，<code>https://www.douban.com/group/shanghaizufang/discussion?start=25</code> 表示第二页从第 25 条记录开始展示，我们可以通过这个控制要爬取的信息条数。</p>
+<h3 id="代码概览">代码概览</h3>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"># -*- coding:utf-8 -*-
+
+import os
+import requests
+import time
+from bs4 import BeautifulSoup
+
+
+class DouBanHouseSpider(object):
+
+    &#34;&#34;&#34;
+    抓取豆瓣小组房源信息
+
+     Attributes:
+        key_word: 房源标题关键字
+        page_num: 每个小组的抓取页数
+        group_list: 豆瓣小组列表
+        index_url: 豆瓣小组列表链接
+        data: 存放抓取结果
+    &#34;&#34;&#34;
+    def __init__(self, key_word, page_num):
+        self.key_word = key_word
+        self.page_num = page_num
+        self.group_list = [&#39;shanghaizufang&#39;, &#39;homeatshanghai&#39;, &#39;383972&#39;, &#39;shzf&#39;, &#39;251101&#39;]
+        self.index_url = [os.path.join(&#39;https://www.douban.com/group&#39;, i, &#39;discussion&#39;) for i in self.group_list]
+        self.data = {}
+        print(&#39;豆瓣房源爬虫准备就绪, 开始爬取数据...&#39;)
+
+    def get_url_content(self, url):
+        &#34;&#34;&#34;
+        根据 url 抓取页面数据
+
+        Args:
+            url: 豆瓣小组链接
+        &#34;&#34;&#34;
+        try:
+            time.sleep(1)
+            headers = {&#39;User-Agent&#39;: &#39;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 &#39;
+                                     &#39;(KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36&#39;}
+            res = requests.get(url, headers=headers)
+            soup = BeautifulSoup(res.text, &#39;html.parser&#39;)
+            title_list = soup(&#39;td&#39;, class_=&#39;title&#39;)
+            for tl in title_list:
+                if self.key_word in tl.a.attrs[&#39;title&#39;]:
+                    self.data[tl.a.attrs[&#39;title&#39;]] = tl.a.attrs[&#39;href&#39;]
+            next_page = soup(&#39;span&#39;, class_=&#39;next&#39;)
+            if next_page:
+                next_url = next_page[0].link.attrs[&#39;href&#39;]
+                end_title = next_url.split(&#39;=&#39;)[1]
+                if int(end_title) &lt; (self.page_num * 25):
+                    self.get_url_content(next_url)
+        except Exception as e:
+            print(&#39;抓取过程报错：%s&#39; % e)
+
+    def start_spider(self):
+        &#34;&#34;&#34;
+        爬虫入口
+        &#34;&#34;&#34;
+        for i in self.index_url:
+            self.get_url_content(i)
+        for k, v in self.data.items():
+            print(&#39;标题：%s, 链接地址：%s&#39;%(k,v))
+
+
+def main():
+    &#34;&#34;&#34;
+    主函数
+    &#34;&#34;&#34;
+    print(&#34;&#34;&#34;
+            ###############################
+                豆瓣房源小组爬虫
+                Author: Abnerzhao
+                Version: 0.0.1
+                Date: 2018-04-04
+            ###############################
+        &#34;&#34;&#34;)
+    key_word = input(&#39;请输入找房关键字：&#39;)
+    page_num = input(&#39;请输入抓取页面数：&#39;)
+    if not key_word:
+        key_word = &#39;1号线&#39;
+    if not page_num:
+        page_num = 5
+    house_spider = DouBanHouseSpider(key_word, int(page_num))
+    house_spider.start_spider()
+    print(&#39;豆瓣房源爬虫爬取结束...&#39;)
+
+
+if __name__ == &#39;__main__&#39;:
+    main()
+</code></pre></div><blockquote>
+<p>请使用 Python3，<a href="https://github.com/Abnerzhao/spider/blob/master/douban/douban_spider_exp1.py">爬虫源码地址</a></p>
+</blockquote>
+<p>执行效果：</p>
+<p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/BAFCA92D-6F56-478A-B94E-8D18830BB546.png" alt=""></p>
+<h3 id="总结">总结</h3>
+<p>这个爬虫很简单，没有进行模拟登陆也能抓取，当抓取页面数较大时会耗时较长。同一个房源信息可能在不同的小组中都有，所以通过一个字典来保存抓取的标题和链接，避免重复的标题。</p>
+<p>后续待优化的地方:</p>
+<ul>
+<li>模拟登陆</li>
+<li>支持多个关键字</li>
+<li>多线程</li>
+</ul></div>
+                    <div class="post_footer">
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://blog.abnerzhao.com">Designed by Abnerzhao,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+
+    <script src="https://blog.abnerzhao.com/js/jquery-3.5.1.min.js"></script>
+<link href="https://blog.abnerzhao.com/css/fancybox.min.css" rel="stylesheet">
+<script src="https://blog.abnerzhao.com/js/fancybox.min.js"></script>
+<script src="https://blog.abnerzhao.com/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+</body>
+
+</html>

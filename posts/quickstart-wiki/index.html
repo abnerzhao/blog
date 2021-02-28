@@ -153,9 +153,9 @@ $ git remote add origin git@github.com:[yourusename]/mywiki.git
 $ git push -u origin master
 </code></pre></div><h4 id="导入到-readthedocs">导入到 ReadtheDocs</h4>
 <p>首先到 github 中选择 mywiki 仓库，Settings / Services / Add ReadTheDocs</p>
-<p><img src="/img/B18863C1-6A9F-4A72-95C0-2580B1E75983.png" alt=""></p>
+<p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/B18863C1-6A9F-4A72-95C0-2580B1E75983.png" alt=""></p>
 <p>然后到 ReadtheDocs 网站 import mywiki 仓库，导入成功后可看到如下页面：</p>
-<p><img src="/img/C1184CE3-2FA6-4898-ADAE-3072C6E8FF4E.png" alt=""></p>
+<p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/C1184CE3-2FA6-4898-ADAE-3072C6E8FF4E.png" alt=""></p>
 <h4 id="构建文档">构建文档</h4>
 <p>现在 mywiki 目录只有默认内容，需要我们自己添加内容，然后构建。构建方式有两种：</p>
 <ul>
@@ -167,7 +167,7 @@ $ git push -u origin master
 $ ls
 Makefile build    make.bat source
 $ make html
-</code></pre></div><p><img src="/img/4CE490E0-C3D4-448A-9A69-0BC2FFF95A1D.png" alt=""></p>
+</code></pre></div><p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/4CE490E0-C3D4-448A-9A69-0BC2FFF95A1D.png" alt=""></p>
 <p>简单的 wiki 就基本搭建完成了，后续我们需要添加内容。不过这玩意使用的 reStructureText 语法而不是我们熟悉的 Markdown，我们可以通过 <a href="http://pandoc.org/try/">pandoc</a> 进行格式转换。reStructureText 的语法也比较简单。</p>
 <h4 id="开始写-wiki">开始写 wiki</h4>
 <p>简单添加些内容，看看效果</p>
@@ -212,7 +212,7 @@ $ cat python.rst
 $ cd /Users/Mr-zhao/mywiki
 $ make html  
 </code></pre></div><p>再次查看文档：</p>
-<p><img src="/img/B35BA734-C452-44C1-AF8A-ACE9243D9D58.png" alt=""></p>
+<p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/B35BA734-C452-44C1-AF8A-ACE9243D9D58.png" alt=""></p>
 <h3 id="小结">小结</h3>
 <p>Sphinx + GitHub + ReadtheDocs 总体的使用感受比 GitBook 要好，GitBook 使用起来总感觉很慢。平时写博客记点东西都比较琐碎，使用 Sphinx 更规范系统些。</p>
 <p>工具倒是搭建好，能否坚持系统地总结梳理知识，Emm&hellip;.这是个问题！</p>
