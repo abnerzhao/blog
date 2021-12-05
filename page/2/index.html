@@ -96,36 +96,6 @@
 
 <div class="post animated fadeInDown">
     <div class="post_title">
-        <h2><a href='/posts/mysql-utf8/'>MySQL 中 utf8 和 utf8mb4 编码</a></h2>
-    </div>
-    
-    <div class="list">
-        <div class="post_content markdown">
-            <p><p>最近在开发过程中碰到数据库写入失败的情况。</p>
-<blockquote>
-<p>&ldquo;Incorrect string value: &lsquo;\xF0\x9F\x91\x91M\xE3&hellip;&rdquo; for column &lsquo;nick_name&rsquo; at row 1&rdquo;</p>
-</blockquote>
-<p>排查发现是由于该用户的昵称含有 <code>emoji</code> 表情包导致的，含有表情包和普通字符串有什么区别呢？</p>
-<p>原来 MySQL 的默认 <code>utf8</code> (也称 <code>utf8mb3</code>) 只支持三个字节的字符。而 <code>emoji</code> 表情包需要四个字节表示。所以存储就会报错。不过 MySQL 在 5.5.3 之后增加了这个 <code>utf8mb4</code> 的编码，用来兼容四字节的 Unicode。</p>
-<p>为了解决这个问题，需要修改数据库的字符编码。</p>......</p>
-        </div>
-    </div>
-    
-    <div class="post_footer">
-        <div class="meta">
-            <div class="info">
-                <span class="field">
-                    <i class="ri-map-pin-time-line"></i>
-                    <span class="date">2020.02.25</span>
-                </span>
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="post animated fadeInDown">
-    <div class="post_title">
         <h2><a href='/posts/my2019/'>2019 小结</a></h2>
     </div>
     
@@ -212,6 +182,51 @@
                 <span class="field">
                     <i class="ri-map-pin-time-line"></i>
                     <span class="date">2018.12.23</span>
+                </span>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="post animated fadeInDown">
+    <div class="post_title">
+        <h2><a href='/posts/queryset-api-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/'>QuerySet API 学习笔记</a></h2>
+    </div>
+    
+    <div class="list">
+        <div class="post_content markdown">
+            <p><h3 id="querysets-evaluated">QuerySets evaluated</h3>
+<p>可以创建、过滤、切片和传递查询集而不用真实操作数据库。在你对查询集做求值之前，不会发生任何实际的数据库操作。</p>
+<p>对于查询集我们使用以下方法进行求值：</p>
+<ul>
+<li>Iteration</li>
+<li>Slicing</li>
+<li>Pickling/Caching</li>
+<li>repr()</li>
+<li>len()</li>
+<li>list()</li>
+<li>bool()</li>
+</ul>
+<h3 id="queryset-api">QuerySet API</h3>
+<h4 id="返回新的查询集方法">返回新的查询集方法</h4>
+<ul>
+<li>filter</li>
+</ul>
+<p>返回一个新的 QuerySet 包含给定参数的查询匹配对象，更复杂的查询可以使用 Q 对象。</p>
+<ul>
+<li>exclude</li>
+</ul>
+<p>返回一个新的 QuerySet，它包含不满足给定的查找参数的对象，更复杂的查询同样可以使用 Q 对象。</p>......</p>
+        </div>
+    </div>
+    
+    <div class="post_footer">
+        <div class="meta">
+            <div class="info">
+                <span class="field">
+                    <i class="ri-map-pin-time-line"></i>
+                    <span class="date">2018.08.19</span>
                 </span>
                 
             </div>
