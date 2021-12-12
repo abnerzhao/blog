@@ -96,6 +96,51 @@
 
 <div class="post animated fadeInDown">
     <div class="post_title">
+        <h2><a href='/posts/queryset-api-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/'>QuerySet API 学习笔记</a></h2>
+    </div>
+    
+    <div class="list">
+        <div class="post_content markdown">
+            <p><h3 id="querysets-evaluated">QuerySets evaluated</h3>
+<p>可以创建、过滤、切片和传递查询集而不用真实操作数据库。在你对查询集做求值之前，不会发生任何实际的数据库操作。</p>
+<p>对于查询集我们使用以下方法进行求值：</p>
+<ul>
+<li>Iteration</li>
+<li>Slicing</li>
+<li>Pickling/Caching</li>
+<li>repr()</li>
+<li>len()</li>
+<li>list()</li>
+<li>bool()</li>
+</ul>
+<h3 id="queryset-api">QuerySet API</h3>
+<h4 id="返回新的查询集方法">返回新的查询集方法</h4>
+<ul>
+<li>filter</li>
+</ul>
+<p>返回一个新的 QuerySet 包含给定参数的查询匹配对象，更复杂的查询可以使用 Q 对象。</p>
+<ul>
+<li>exclude</li>
+</ul>
+<p>返回一个新的 QuerySet，它包含不满足给定的查找参数的对象，更复杂的查询同样可以使用 Q 对象。</p>......</p>
+        </div>
+    </div>
+    
+    <div class="post_footer">
+        <div class="meta">
+            <div class="info">
+                <span class="field">
+                    <i class="ri-map-pin-time-line"></i>
+                    <span class="date">2018.08.19</span>
+                </span>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="post animated fadeInDown">
+    <div class="post_title">
         <h2><a href='/posts/douban-spider/'>豆瓣房源爬虫小记</a></h2>
     </div>
     
@@ -177,44 +222,6 @@
                 <span class="field">
                     <i class="ri-map-pin-time-line"></i>
                     <span class="date">2017.04.11</span>
-                </span>
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="post animated fadeInDown">
-    <div class="post_title">
-        <h2><a href='/posts/low-level-discovery/'>Zabbix Low-level discovery</a></h2>
-    </div>
-    
-    <div class="list">
-        <div class="post_content markdown">
-            <p><blockquote>
-<p>Low-level discovery provides a way to automatically create items, triggers, and graphs for different entities on a computer. For instance, Zabbix can automatically start monitoring file systems or network interfaces on your machine, without the need to create items for each file system or network interface manually.</p>
-</blockquote>
-<blockquote>
-<p>In Zabbix, four types of item discovery are supported out of the box:</p>
-</blockquote>
-<ul>
-<li>discovery of file systems;</li>
-<li>discovery of network interfaces;</li>
-<li>discovery of CPUs and CPU cores;</li>
-<li>discovery of SNMP OIDs.</li>
-</ul>
-<blockquote>
-<p>A user can define their own types of discovery, provided they follow a particular JSON protocol.</p>
-</blockquote>......</p>
-        </div>
-    </div>
-    
-    <div class="post_footer">
-        <div class="meta">
-            <div class="info">
-                <span class="field">
-                    <i class="ri-map-pin-time-line"></i>
-                    <span class="date">2017.01.21</span>
                 </span>
                 
             </div>

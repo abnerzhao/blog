@@ -3,17 +3,22 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://blog.abnerzhao.com/posts/go-build/</loc>
-    <lastmod>2021-01-30T17:16:40+08:00</lastmod>
+    <loc>https://blog.abnerzhao.com/posts/2020-photos/</loc>
+    <lastmod>2021-01-30T20:18:30+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://blog.abnerzhao.com/posts/</loc>
-    <lastmod>2021-01-30T17:16:40+08:00</lastmod>
+    <lastmod>2021-01-30T20:18:30+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://blog.abnerzhao.com/</loc>
+    <lastmod>2021-01-30T20:18:30+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.abnerzhao.com/posts/go-build/</loc>
     <lastmod>2021-01-30T17:16:40+08:00</lastmod>
   </url>
   
