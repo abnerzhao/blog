@@ -96,6 +96,37 @@
 
 <div class="post animated fadeInDown">
     <div class="post_title">
+        <h2><a href='/posts/ansible-callback-plugins/'>Ansible 回调插件简单使用</a></h2>
+    </div>
+    
+    <div class="list">
+        <div class="post_content markdown">
+            <p><h2 id="developing-plugins">Developing Plugins</h2>
+<p>插件是增强ansible核心功能的代码片段，我们可以很方便的使用插件，编写插件代码。如果我们想要对ansible的执行结果进行分析，根据返回结果发送邮件，写入日志等都可以通过插件实现。</p>
+<h3 id="插件列表">插件列表</h3>
+<ul>
+<li><strong>Action plugins</strong> are front ends to modules and can execute actions on the controller before calling the modules themselves.（操作插件，调用模块之前执行操作）</li>
+<li><strong>Cache plugins</strong> are used to keep a cache of ‘facts’ to avoid costly fact-gathering operations.（缓存插件，缓存主机facts变量）</li>
+<li><strong>Callback plugins</strong> enable you to hook into Ansible events for display or logging purposes.（回调插件，对事件进行显示和记录，这个常用）</li>
+</ul>......</p>
+        </div>
+    </div>
+    
+    <div class="post_footer">
+        <div class="meta">
+            <div class="info">
+                <span class="field">
+                    <i class="ri-map-pin-time-line"></i>
+                    <span class="date">2017.04.11</span>
+                </span>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="post animated fadeInDown">
+    <div class="post_title">
         <h2><a href='/posts/low-level-discovery/'>Zabbix Low-level discovery</a></h2>
     </div>
     

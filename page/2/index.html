@@ -96,6 +96,61 @@
 
 <div class="post animated fadeInDown">
     <div class="post_title">
+        <h2><a href='/posts/influxdb-ha/'>InfluxDB 高可用</a></h2>
+    </div>
+    
+    <div class="list">
+        <div class="post_content markdown">
+            <p><p><code>influxdb</code> 开源版本不支持集群模式，社区开源的方案有多种，本文主要介绍官方提供的高可用方案 <code>influxdb-relay</code>。</p>
+<h3 id="架构图">架构图</h3>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">        ┌─────────────────┐                 
+        │writes &amp; queries │                 
+        └─────────────────┘                 
+                 │                          
+                 ▼                          
+         ┌───────────────┐                  
+         │               │                  
+┌────────│ Load Balancer │─────────┐        
+│        │               │         │        
+│        └──────┬─┬──────┘         │        
+│               │ │                │        
+│               │ │                │        
+│        ┌──────┘ └────────┐       │        
+│        │ ┌─────────────┐ │       │┌──────┐
+│        │ │/write or UDP│ │       ││/query│
+│        ▼ └─────────────┘ ▼       │└──────┘
+│  ┌──────────┐      ┌──────────┐  │        
+│  │ InfluxDB │      │ InfluxDB │  │        
+│  │ Relay    │      │ Relay    │  │        
+│  └──┬────┬──┘      └────┬──┬──┘  │        
+│     │    |              |  │     │        
+│     |  ┌─┼──────────────┘  |     │        
+│     │  │ └──────────────┐  │     │        
+│     ▼  ▼                ▼  ▼     │        
+│  ┌──────────┐      ┌──────────┐  │        
+│  │          │      │          │  │        
+└─▶│ InfluxDB │      │ InfluxDB │◀─┘        
+   │          │      │          │           
+   └──────────┘      └──────────┘         
+</code></pre></div>......</p>
+        </div>
+    </div>
+    
+    <div class="post_footer">
+        <div class="meta">
+            <div class="info">
+                <span class="field">
+                    <i class="ri-map-pin-time-line"></i>
+                    <span class="date">2020.09.29</span>
+                </span>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="post animated fadeInDown">
+    <div class="post_title">
         <h2><a href='/posts/mysql-utf8/'>MySQL 中 utf8 和 utf8mb4 编码</a></h2>
     </div>
     
@@ -181,37 +236,6 @@
                 <span class="field">
                     <i class="ri-map-pin-time-line"></i>
                     <span class="date">2019.01.19</span>
-                </span>
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="post animated fadeInDown">
-    <div class="post_title">
-        <h2><a href='/posts/%E6%91%84%E5%BD%B1%E7%9F%A5%E8%AF%86%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/'>摄影知识快速入门</a></h2>
-    </div>
-    
-    <div class="list">
-        <div class="post_content markdown">
-            <p><h2 id="前言">前言</h2>
-<p>三流的摄影师比器材，二流的摄影师比技术，一流的摄影师比思想。</p>
-<blockquote>
-<p>&ldquo;照片从来不能解决问题，它总是在不断的提出问题：为什么会这样？如果你能不断的提出问题，你就会不断的按下快门，把你的思想和疑问传达出来。如果观众看过你的照片后也良久驻足，思考着你的思考，疑问着你的疑问，那您就快接近摄影的最高境界了&rdquo;        《论摄影》</p>
-</blockquote>
-<h2 id="摄影名词">摄影名词</h2>
-<h3 id="iso">ISO</h3>
-<p>ISO（感光度）是CCD（Charge Coupled Device，电子感光芯片）或是胶卷对光线的敏感程度。</p>......</p>
-        </div>
-    </div>
-    
-    <div class="post_footer">
-        <div class="meta">
-            <div class="info">
-                <span class="field">
-                    <i class="ri-map-pin-time-line"></i>
-                    <span class="date">2018.12.23</span>
                 </span>
                 
             </div>
