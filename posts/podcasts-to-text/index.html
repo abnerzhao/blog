@@ -101,30 +101,25 @@
 <p>大致的处理流程：下载播客音频文件 -&gt; 通过工具将音频转成文字稿 -&gt; 对文字稿进行摘录、AI 总结</p>
 <h2 id="实现步骤">实现步骤</h2>
 <h3 id="下载播客语音文件">下载播客语音文件</h3>
-<p>有两种方式：</p>
-<ul>
-<li>通过 <a href="https://chromewebstore.google.com/detail/%E6%92%AD%E5%AE%A2%EF%BC%9A%E4%B8%80%E4%B8%AA%E6%92%AD%E5%AE%A2%E6%92%AD%E6%94%BE%E5%99%A8%EF%BC%8C%E4%B8%8B%E8%BD%BD%E5%99%A8%EF%BC%8C%E6%96%87%E5%AD%97%E8%BD%AC%E5%86%99%E5%B7%A5%E5%85%B7/lmpfkgigdbnbdopkpeippmadlchmkphi">播客：一个播客播放器，下载器，文字转写工具</a> Chrome 插件可以搜索并订阅想听的播客，这个插件功能比较强大，可以收听播客内容、下载音频文件、生成 AI 摘要以及转录为文字。不过后两项功能需要收费（如果不想折腾，充值即可，后面的内容就不用看了&hellip;）另外这个插件的播客节目可能不全，有些节目搜不到。</li>
-</ul>
+<h4 id="播客插件">播客插件</h4>
+<p>通过 <a href="https://chromewebstore.google.com/detail/%E6%92%AD%E5%AE%A2%EF%BC%9A%E4%B8%80%E4%B8%AA%E6%92%AD%E5%AE%A2%E6%92%AD%E6%94%BE%E5%99%A8%EF%BC%8C%E4%B8%8B%E8%BD%BD%E5%99%A8%EF%BC%8C%E6%96%87%E5%AD%97%E8%BD%AC%E5%86%99%E5%B7%A5%E5%85%B7/lmpfkgigdbnbdopkpeippmadlchmkphi">播客：一个播客播放器，下载器，文字转写工具</a> Chrome 插件可以搜索并订阅想听的播客，这个插件功能比较强大，可以收听播客内容、下载音频文件、生成 AI 摘要以及转录为文字。不过后两项功能需要收费（如果不想折腾，充值即可，后面的内容就不用看了&hellip;）另外这个插件的播客节目可能不全，有些节目搜不到。</p>
 <p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013223449.png" alt=""></p>
-<ul>
-<li>对于小宇宙用户可以通过 <a href="https://chromewebstore.google.com/detail/cosmos-enhanced/bgjffbeeolcikmcpliaekbgdkflchakg">Cosmos Enhanced</a> Chrome 插件增强小宇宙网页版的功能。支持下载播客的音频文件。
-<img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013224503.png" alt=""></li>
-</ul>
+<h4 id="小宇宙增强插件">小宇宙增强插件</h4>
+<p>对于小宇宙用户可以通过 <a href="https://chromewebstore.google.com/detail/cosmos-enhanced/bgjffbeeolcikmcpliaekbgdkflchakg">Cosmos Enhanced</a> Chrome 插件增强小宇宙网页版的功能。支持下载播客的音频文件。</p>
+<p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013224503.png" alt=""></p>
 <p>通过以上两种方式即可获取到播客的音频文件，播客节目的小宇宙主页可以参考：<a href="https://xyzrank.com/?from=itab#/hot-podcasts">中文播客榜</a>或者直接谷歌搜索 <code>小宇宙+播客名称</code>。</p>
 <h3 id="通过工具将音频转成文字稿">通过工具将音频转成文字稿</h3>
 <p>主要介绍两种免费的方式，准确率和速度都还行。</p>
-<ul>
-<li>剪映：剪映大家都不陌生，一个免费好用的视频剪辑软件。其中也有一些 AI 功能加持，比如自动识别语音并生成字幕。我们可以将下载好的音频文件导入剪映，使用识别字幕功能并导出字幕内容即可获得完整的文字稿。
-<img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013225953.png" alt=""></li>
-</ul>
-<p>字幕识别完成后，剪辑轨道上增加一个文本轨道，此时我们直接导出字幕，这样就可以获得一个 txt 的文字稿。
-<img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013230416.png" alt=""></p>
-<ul>
-<li>飞书妙记：在飞书的应用中心中找到飞书妙记，上传音频文件并将其识别为文字。
-<img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013230945.png" alt="">
-识别完成后，飞书会给你发个消息，然后跳转到网页版即可查看文字稿内容。
-<img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013231438.png" alt=""></li>
-</ul>
+<h4 id="剪映">剪映</h4>
+<p>剪映大家都不陌生，一个免费好用的视频剪辑软件。其中也有一些 AI 功能加持，比如自动识别语音并生成字幕。我们可以将下载好的音频文件导入剪映，使用识别字幕功能并导出字幕内容即可获得完整的文字稿。</p>
+<p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013225953.png" alt=""></p>
+<p>字幕识别完成后，剪辑轨道上增加一个文本轨道，此时我们直接导出字幕，这样就可以获得一个 txt 的文字稿。</p>
+<p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013230416.png" alt=""></p>
+<h4 id="飞书妙记">飞书妙记</h4>
+<p>在飞书的应用中心中找到飞书妙记，上传音频文件并将其识别为文字。</p>
+<p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013230945.png" alt=""></p>
+<p>识别完成后，飞书会给你发个消息，然后跳转到网页版即可查看文字稿内容。</p>
+<p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013231438.png" alt=""></p>
 <h2 id="小结">小结</h2>
 <p>有了文字稿我们就能方便的做笔记，同时可以借助 AI 工具对播客内容进行总结并提问。过程虽然有点麻烦，总体还是能接受，相信以后播客平台也会支持查看完整文字稿、做笔记等功能。</p>
 <p>当然还有其他方式也能实现这个功能，下面列举了其他的几个工具，大家也可以尝试一下。</p>
