@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abnerzhao" />
+	
+	
+	
+	<title>如何将播客音频转为文字稿 ｜ 知行
+合一</title>
+	
+    
+    
+    <meta name="description" content="背景 如今播客也逐渐大众化起来，作为一个「小宇宙」收听时长 700&#43; 小时的听众，已经习惯每天吃早餐和上下班通勤时间听播客消遣时间。伴随着播客节目越来越丰富，其中不乏很多优质、知识密度高的播客，对于一些精彩的时刻想要记录成文字但都不是很方便。网上搜索了一些语音转文字的方法，并亲自实践形成此文，供大家参考。
+大致的处理流程：下载播客音频文件 -&amp;gt; 通过工具将音频转成文字稿 -&amp;gt; 对文字稿进行摘录、AI 总结
+" />
+    
+
+    
+    
+    <meta name="keywords" content="Hugo, theme, zozo" />
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://blog.abnerzhao.com/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://blog.abnerzhao.com/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">Archive</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://blog.abnerzhao.com/">
+                    <span>知行
+合一</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://www.douban.com/people/66794775/" title="douban" target="_blank"><i class="ri-douban-fill"></i></a>
+                
+                
+                
+                <a href="https://github.com/abnerzhao" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                <a href="https://blog.abnerzhao.com/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/podcasts-to-text/'>如何将播客音频转为文字稿</a></h2>
+                        <span class="date">2024.10.13</span>
+                    </div>
+                    <div class="post_content markdown"><h2 id="背景">背景</h2>
+<p>如今播客也逐渐大众化起来，作为一个「小宇宙」收听时长 700+ 小时的听众，已经习惯每天吃早餐和上下班通勤时间听播客消遣时间。伴随着播客节目越来越丰富，其中不乏很多优质、知识密度高的播客，对于一些精彩的时刻想要记录成文字但都不是很方便。网上搜索了一些语音转文字的方法，并亲自实践形成此文，供大家参考。</p>
+<p>大致的处理流程：下载播客音频文件 -&gt; 通过工具将音频转成文字稿 -&gt; 对文字稿进行摘录、AI 总结</p>
+<h2 id="实现步骤">实现步骤</h2>
+<h3 id="下载播客语音文件">下载播客语音文件</h3>
+<p>有两种方式：</p>
+<ul>
+<li>通过 <a href="https://chromewebstore.google.com/detail/%E6%92%AD%E5%AE%A2%EF%BC%9A%E4%B8%80%E4%B8%AA%E6%92%AD%E5%AE%A2%E6%92%AD%E6%94%BE%E5%99%A8%EF%BC%8C%E4%B8%8B%E8%BD%BD%E5%99%A8%EF%BC%8C%E6%96%87%E5%AD%97%E8%BD%AC%E5%86%99%E5%B7%A5%E5%85%B7/lmpfkgigdbnbdopkpeippmadlchmkphi">播客：一个播客播放器，下载器，文字转写工具</a> Chrome 插件可以搜索并订阅想听的播客，这个插件功能比较强大，可以收听播客内容、下载音频文件、生成 AI 摘要以及转录为文字。不过后两项功能需要收费（如果不想折腾，充值即可，后面的内容就不用看了&hellip;）另外这个插件的播客节目可能不全，有些节目搜不到。</li>
+</ul>
+<p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013223449.png" alt=""></p>
+<ul>
+<li>对于小宇宙用户可以通过 <a href="https://chromewebstore.google.com/detail/cosmos-enhanced/bgjffbeeolcikmcpliaekbgdkflchakg">Cosmos Enhanced</a> Chrome 插件增强小宇宙网页版的功能。支持下载播客的音频文件。
+<img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013224503.png" alt=""></li>
+</ul>
+<p>通过以上两种方式即可获取到播客的音频文件，播客节目的小宇宙主页可以参考：<a href="https://xyzrank.com/?from=itab#/hot-podcasts">中文播客榜</a>或者直接谷歌搜索 <code>小宇宙+播客名称</code>。</p>
+<h3 id="通过工具将音频转成文字稿">通过工具将音频转成文字稿</h3>
+<p>主要介绍两种免费的方式，准确率和速度都还行。</p>
+<ul>
+<li>剪映：剪映大家都不陌生，一个免费好用的视频剪辑软件。其中也有一些 AI 功能加持，比如自动识别语音并生成字幕。我们可以将下载好的音频文件导入剪映，使用识别字幕功能并导出字幕内容即可获得完整的文字稿。
+<img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013225953.png" alt=""></li>
+</ul>
+<p>字幕识别完成后，剪辑轨道上增加一个文本轨道，此时我们直接导出字幕，这样就可以获得一个 txt 的文字稿。
+<img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013230416.png" alt=""></p>
+<ul>
+<li>飞书妙记：在飞书的应用中心中找到飞书妙记，上传音频文件并将其识别为文字。
+<img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013230945.png" alt="">
+识别完成后，飞书会给你发个消息，然后跳转到网页版即可查看文字稿内容。
+<img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/blog/Pasted%20image%2020241013231438.png" alt=""></li>
+</ul>
+<h2 id="小结">小结</h2>
+<p>有了文字稿我们就能方便的做笔记，同时可以借助 AI 工具对播客内容进行总结并提问。过程虽然有点麻烦，总体还是能接受，相信以后播客平台也会支持查看完整文字稿、做笔记等功能。</p>
+<p>当然还有其他方式也能实现这个功能，下面列举了其他的几个工具，大家也可以尝试一下。</p>
+<ul>
+<li><a href="https://myedit.online/cn/audio-editor/speech-to-text">Myedit</a></li>
+<li><a href="https://openai.com/index/whisper/">Whisper </a></li>
+<li><a href="https://bcut.bilibili.cn/">必剪-让创作更有趣</a></li>
+</ul></div>
+                    <div class="post_footer">
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://blog.abnerzhao.com">Designed by Abnerzhao,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+
+    <script src="https://blog.abnerzhao.com/js/jquery-3.5.1.min.js"></script>
+<link href="https://blog.abnerzhao.com/css/fancybox.min.css" rel="stylesheet">
+<script src="https://blog.abnerzhao.com/js/fancybox.min.js"></script>
+<script src="https://blog.abnerzhao.com/js/zozo.js"></script>
+
+
+<script type="text/javascript" async
+    src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\[\[', '\]\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                TeX: {
+                    equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"]
+                }
+            }
+        });
+
+        MathJax.Hub.Queue(function () {
+            
+            
+            
+            var all = MathJax.Hub.getAllJax(), i;
+            for (i = 0; i < all.length; i += 1) {
+                all[i].SourceElement().parentNode.className += ' has-jax';
+            }
+        });
+    </script>
+
+<style>
+    code.has-jax {
+        font: inherit;
+        font-size: 100%;
+        background: inherit;
+        border: inherit;
+        color: #515151;
+    }
+</style>
+
+
+
+</body>
+
+</html>

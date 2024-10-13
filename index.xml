@@ -8,10 +8,21 @@
 合一</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 20 Jan 2023 22:53:48 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 13 Oct 2024 23:37:55 +0800</lastBuildDate>
     
 	<atom:link href="https://blog.abnerzhao.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>如何将播客音频转为文字稿</title>
+      <link>https://blog.abnerzhao.com/posts/podcasts-to-text/</link>
+      <pubDate>Sun, 13 Oct 2024 23:37:55 +0800</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/podcasts-to-text/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;如今播客也逐渐大众化起来，作为一个「小宇宙」收听时长 700+ 小时的听众，已经习惯每天吃早餐和上下班通勤时间听播客消遣时间。伴随着播客节目越来越丰富，其中不乏很多优质、知识密度高的播客，对于一些精彩的时刻想要记录成文字但都不是很方便。网上搜索了一些语音转文字的方法，并亲自实践形成此文，供大家参考。&lt;/p&gt;
+&lt;p&gt;大致的处理流程：下载播客音频文件 -&amp;gt; 通过工具将音频转成文字稿 -&amp;gt; 对文字稿进行摘录、AI 总结&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>春节自驾回家经历</title>
