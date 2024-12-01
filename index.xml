@@ -248,6 +248,15 @@
     </item>
     
     <item>
+      <title>About Me</title>
+      <link>https://blog.abnerzhao.com/photos/</link>
+      <pubDate>Mon, 01 Jan 2018 20:48:46 +0000</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/photos/</guid>
+      <description>phots</description>
+    </item>
+    
+    <item>
       <title>使用Sphinx &#43; GitHub &#43; Read the Docs搭建wiki</title>
       <link>https://blog.abnerzhao.com/posts/quickstart-wiki/</link>
       <pubDate>Sat, 14 Oct 2017 15:54:01 +0000</pubDate>
