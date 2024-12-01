@@ -25,6 +25,15 @@
     </item>
     
     <item>
+      <title>Life Photos</title>
+      <link>https://blog.abnerzhao.com/photos/</link>
+      <pubDate>Mon, 01 Jan 2024 20:48:46 +0000</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/photos/</guid>
+      <description>Life photos</description>
+    </item>
+    
+    <item>
       <title>春节自驾回家经历</title>
       <link>https://blog.abnerzhao.com/posts/%E6%98%A5%E8%8A%82%E8%87%AA%E9%A9%BE%E5%9B%9E%E5%AE%B6%E7%BB%8F%E5%8E%86/</link>
       <pubDate>Fri, 20 Jan 2023 22:53:48 +0800</pubDate>
@@ -245,15 +254,6 @@
       
       <guid>https://blog.abnerzhao.com/about/</guid>
       <description>Ops/Dev 学艺不精，浅尝辄止 邮箱：opsabnerzhao@163.com</description>
-    </item>
-    
-    <item>
-      <title>About Me</title>
-      <link>https://blog.abnerzhao.com/photos/</link>
-      <pubDate>Mon, 01 Jan 2018 20:48:46 +0000</pubDate>
-      
-      <guid>https://blog.abnerzhao.com/photos/</guid>
-      <description>phots</description>
     </item>
     
     <item>
