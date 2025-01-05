@@ -54,10 +54,6 @@
             </li>
             
             <li>
-                <a href="/photos/">Photos</a>
-            </li>
-            
-            <li>
                 <a href="/about/">About</a>
             </li>
             
@@ -97,6 +93,30 @@
 </div>
         <div class="content">
             
+
+<div class="post animated fadeInDown">
+    <div class="post_title">
+        <h2><a href='/posts/my2024/'>2024 岁月静好</a></h2>
+    </div>
+    
+    <div class="list">
+        <div class="post_content markdown">
+            <p><p>每到年底就习惯性地翻翻手机相册，看看这一年去了哪些地方，做了些什么事情。还好有手机这么方便的记录工具，不然凭空去回想这一年，有时真想不起来都做了些什么。或许是日子过得太平静，没有特别多的记忆在脑海中激起浪花；或许是自己对生活比较钝感，没有太多起伏情绪残存；或许是单纯的年纪变大，记忆力变差而已。回顾 2024 我总结的关键词是「岁月静好」</p>......</p>
+        </div>
+    </div>
+    
+    <div class="post_footer">
+        <div class="meta">
+            <div class="info">
+                <span class="field">
+                    <i class="ri-map-pin-time-line"></i>
+                    <span class="date">2025.01.05</span>
+                </span>
+                
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="post animated fadeInDown">
     <div class="post_title">
@@ -166,36 +186,6 @@
 </blockquote>
 <p><img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/2020-photos/2020-1.jpg" alt="">
 <img src="https://abnerzhao.oss-cn-shanghai.aliyuncs.com/2020-photos/2020-2.jpg" alt=""></p>......</p>
-        </div>
-    </div>
-    
-    <div class="post_footer">
-        <div class="meta">
-            <div class="info">
-                <span class="field">
-                    <i class="ri-map-pin-time-line"></i>
-                    <span class="date">2021.01.30</span>
-                </span>
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="post animated fadeInDown">
-    <div class="post_title">
-        <h2><a href='/posts/go-build/'>go build 编译优化</a></h2>
-    </div>
-    
-    <div class="list">
-        <div class="post_content markdown">
-            <p><p>Go 项目使用容器运行时报以下错误：</p>
-<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">standard_init_linux.go:207: exec user process caused &#34;no such file or directory&#34;
-</code></pre></div><p>网上查了一下原因：<code>CGO has to be disabled for alpine.</code></p>
-<p>Dockerfile 中使用的是 <code>golang:1.14-alpine</code> 镜像，Go build 编译参数如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">GOOS=linux GOARCH=amd64 go build -ldflags &#34;-w -s&#34; -gcflags &#34;-N -l&#34; -mod=vendor -o ./bin/mytest .
-</code></pre></div><p>显而易见添加 <code>CGO_ENABLED=0</code> 编译之后即可运行成功。<code>CGO_ENABLED</code> 默认是开启的，允许在 Go 代码中调用 C 代码。</p>
-<p><code>go build</code> 编译生产环境下使用的可执行文件一般会加一些优化参数，简单复习一下。</p>......</p>
         </div>
     </div>
     

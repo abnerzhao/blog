@@ -8,10 +8,19 @@
 合一</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 13 Oct 2024 23:37:55 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 05 Jan 2025 17:23:56 +0800</lastBuildDate>
     
 	<atom:link href="https://blog.abnerzhao.com/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>2024 岁月静好</title>
+      <link>https://blog.abnerzhao.com/posts/my2024/</link>
+      <pubDate>Sun, 05 Jan 2025 17:23:56 +0800</pubDate>
+      
+      <guid>https://blog.abnerzhao.com/posts/my2024/</guid>
+      <description>&lt;p&gt;每到年底就习惯性地翻翻手机相册，看看这一年去了哪些地方，做了些什么事情。还好有手机这么方便的记录工具，不然凭空去回想这一年，有时真想不起来都做了些什么。或许是日子过得太平静，没有特别多的记忆在脑海中激起浪花；或许是自己对生活比较钝感，没有太多起伏情绪残存；或许是单纯的年纪变大，记忆力变差而已。回顾 2024 我总结的关键词是「岁月静好」&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>如何将播客音频转为文字稿</title>
