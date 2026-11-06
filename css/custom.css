@@ -1,13 +1,9 @@
-/* Blog body font: TsangerJinKai02 W04 */
-@font-face {
-  font-family: "TsangerJinKai02";
-  src: url("../fonts/TsangerJinKai02-W04.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+/* Keep the original theme typography until W04 has finished loading. */
+html.w04-font-ready {
+  font-size: 18px;
 }
 
-body {
+html.w04-font-ready body {
   font-family:
     "TsangerJinKai02",
     "PingFang SC",
@@ -15,4 +11,12 @@ body {
     sans-serif,
     "Apple Color Emoji",
     "Segoe UI Emoji";
+  font-size: 1rem;
+}
+
+/* Scale the theme's fixed-size archive and pagination text with the base. */
+html.w04-font-ready .list_with_title,
+html.w04-font-ready .list_with_title .listing .listing_post .post_time,
+html.w04-font-ready .pagination {
+  font-size: 0.875rem;
 }
